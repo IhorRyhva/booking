@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .booking-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: 0.2s;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .hotel-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .location {
+            color: #777;
+            margin-bottom: 12px;
+        }
+
+        .info {
+            margin: 6px 0;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .stars {
+            color: #f5b301;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>My Bookings</h1>
+
+    <div class="booking-list">
+
+        <div class="booking-card" th:each="book : ${books}">
+
+            <div class="hotel-name"
+                 th:text="${book.getRoom().hotel().nameOfHotel()}">
+            </div>
+
+            <div class="location"
+                 th:text="${book.getRoom().hotel().location()}">
+            </div>
+
+            <div class="info">
+                <span class="label">Booked date:</span>
+                <span th:text="${book.getBookedData()}"></span>
+            </div>
+
+            <div class="info">
+                <span class="label">Stars:</span>
+                <span class="stars"
+                      th:text="${book.getRoom().hotel().star()}"></span>
+            </div>
+
+            <div class="info">
+                <span class="label">Room number:</span>
+                <span th:text="${book.getRoom().number()}"></span>
+            </div>
+
+            <div class="info">
+                <span class="label">Category:</span>
+                <span th:text="${book.getRoom().roomCategory()}"></span>
+            </div>
+
+            <div class="info">
+                <span class="label">Price:</span>
+                <span th:text="${book.getRoom().price()} + ' $'"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.petProject.booking.hotel;
+package com.petProject.booking.accommodation.hotel;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

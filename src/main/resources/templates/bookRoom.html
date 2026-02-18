@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Book room</title>
+
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 6px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .info p {
+      margin: 4px 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    input {
+      width: 100%;
+      padding: 9px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 12px;
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      margin-top: 15px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="badge" th:if="${authorized}">Signed in</div>
+  <div class="badge" th:if="${!authorized}">Guest booking</div>
+
+  <div class="section info">
+    <h2>Room</h2>
+
+    <p><b>Hotel:</b> <span th:text="${nameOfHotel}"></span></p>
+    <p><b>Location:</b> <span th:text="${country}"></span>, <span th:text="${town}"></span></p>
+    <p><b>Stars:</b> <span th:text="${star}"></span></p>
+    <p><b>Room:</b> <span th:text="${number}"></span></p>
+    <p><b>Category:</b> <span th:text="${category}"></span></p>
+    <p><b>Price:</b> <span th:text="${price}"></span> €</p>
+
+  </div>
+
+  <div class="section">
+    <h2>Booking</h2>
+
+    <form th:action="@{/bookRoom}" method="post">
+
+      <label>Check in</label>
+      <input type="text" th:value="${start}" readonly>
+
+      <label>Check out</label>
+      <input type="text" th:value="${end}" readonly>
+
+      <!-- AUTH USER -->
+      <div th:if="${authorized}">
+        <label>Name</label>
+        <input type="text" th:value="${userName}" name="userName" readonly>
+
+        <label>Email</label>
+        <input type="email" th:value="${email}" name="email" readonly>
+      </div>
+
+      <!-- GUEST -->
+      <div th:if="${!authorized}">
+        <label>Name</label>
+        <input type="text" name="userName" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+      </div>
+
+      <input type="hidden" name="nameOfHotel" th:value="${nameOfHotel}">
+      <input type="hidden" name="country" th:value="${country}">
+      <input type="hidden" name="town" th:value="${town}">
+      <input type="hidden" name="star" th:value="${star}">
+      <input type="hidden" name="number" th:value="${number}">
+      <input type="hidden" name="category" th:value="${category}">
+      <input type="hidden" name="price" th:value="${price}">
+
+      <button type="submit">Confirm booking</button>
+
+    </form>
+  </div>
+
+  <div class="footer">
+    Your booking will be processed after confirmation.
+  </div>
+
+</div>
+
+</body>
+</html>

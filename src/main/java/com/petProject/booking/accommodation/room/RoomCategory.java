@@ -1,9 +1,10 @@
-package com.petProject.booking.hotel.room;
+package com.petProject.booking.accommodation.room;
 
 public enum RoomCategory {
     LUX,
     FAMILY,
     ECONOMY,
     BASIC,
-    DELUXE
+    DELUXE,
+    ANY
 }

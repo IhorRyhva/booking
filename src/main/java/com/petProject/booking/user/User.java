@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 @Entity
 @Getter
@@ -27,5 +28,6 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @ToString.Exclude
+    @OrderBy("bookedData.start DESC")
     private List<Book> books = new ArrayList<>();
 }

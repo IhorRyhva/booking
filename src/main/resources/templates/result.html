@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Results</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 40px auto;
+            gap: 30px;
+        }
+
+        /* FILTER PANEL */
+
+        .filters {
+            width: 280px;
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            height: fit-content;
+        }
+
+        .filters h2 {
+            margin-top: 0;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #1976d2;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #125aa0;
+        }
+
+        /* RESULTS AREA */
+
+        .results {
+            flex: 1;
+        }
+
+        .results h1 {
+            margin-top: 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        }
+
+        .card-left h3 {
+            margin: 0 0 8px 0;
+        }
+
+        .card-left p {
+            margin: 4px 0;
+            color: #555;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .book-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #2e7d32;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .book-btn:hover {
+            background: #1f5a22;
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT FILTERS -->
+    <div class="filters">
+        <h2>Filters</h2>
+
+        <form method="POST" action="/result">
+
+            <div class="filter-group">
+                <label>Stars</label>
+                <select name="star">
+                    <option value="ANY">Any</option>
+                    <option value="ONE">1 🌟</option>
+                    <option value="TWO">2 🌟</option>
+                    <option value="THREE">3 🌟</option>
+                    <option value="FOUR">4 🌟</option>
+                    <option value="FIVE">5 🌟</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Room category</label>
+                <select name="roomCategory">
+                    <option value="ANY">Any</option>
+                    <option value="LUX">Luxury</option>
+                    <option value="DELUXE">Deluxe</option>
+                    <option value="FAMILY">Family</option>
+                    <option value="BASIC">Basic</option>
+                    <option value="ECONOMY">Economy</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Max price</label>
+                <input type="number" name="max" value="1000">
+            </div>
+
+            <div class="filter-group">
+                <label>Min price</label>
+                <input type="number" name="min" value="0">
+            </div>
+
+            <button type="submit">Apply filters</button>
+
+        </form>
+    </div>
+
+    <!-- RIGHT RESULTS -->
+    <div class="results">
+
+        <h1>Available Rooms</h1>
+
+        <div th:if="${#lists.isEmpty(rooms)}" class="empty">
+            No rooms found 😕
+        </div>
+
+        <div th:each="room : ${rooms}" class="card">
+
+            <div class="card-left">
+                <h3 th:text="${room.hotel().nameOfHotel()}"></h3>
+                <p>
+                    🌟 Stars:
+                    <span th:text="${room.hotel().star()}"></span>
+                </p>
+                <p>
+                    🛏️ Category:
+                    <span th:text="${room.roomCategory()}"></span>
+                </p>
+                <p>
+                    Room №
+                    <span th:text="${room.number()}"></span>
+                </p>
+            </div>
+
+            <div class="card-right">
+                <div class="price">
+                    <span th:text="${room.price()}"></span> $
+                </div>
+                <form method="get" th:action="@{/bookRoom}">
+                    <input type="hidden" name="country" th:value="${room.hotel().location().country()}">
+                    <input type="hidden" name="town" th:value="${room.hotel().location().town()}">
+                    <input type="hidden" name="nameOfHotel" th:value="${room.hotel().nameOfHotel()}">
+                    <input type="hidden" name="star" th:value="${room.hotel().star()}">
+                    <input type="hidden" name="category" th:value="${room.roomCategory()}">
+                    <input type="hidden" name="number" th:value="${room.number()}">
+                    <input type="hidden" name="price" th:value="${room.price()}">
+                    <button type="submit" class="book-btn">Book now</button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

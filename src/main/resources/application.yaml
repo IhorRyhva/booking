@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/booking
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/booking
     username: root
     password: 1111
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,7 +16,7 @@ spring:
         registration:
           keycloak:
             client-id: book-client
-            client-secret: roqdDQVHoaOOVH6bmPQO6lIanjjj1HmS
+            client-secret: 3YlOc89KOY4yu6PUH1tg23SULaP24iGp
             scope:
               - openid
               - profile
