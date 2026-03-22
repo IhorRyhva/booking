@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -26,5 +27,16 @@ public class UserService {
 
     public Optional<User> getUser (String email) {
         return this.repository.findByEmail(email);
+    }
+
+    public User getUser(String email, String userName) {
+        Optional<User> optionalUser = this.repository.findByEmail(email);
+        User user = optionalUser.orElseGet(() -> User.builder()
+                .email(email)
+                .userName(userName)
+                .role("")
+                .books(new ArrayList<>())
+                .build());
+        return user;
     }
 }

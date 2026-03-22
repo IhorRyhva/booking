@@ -1,12 +1,11 @@
 package com.petProject.booking.user;
 
-import com.petProject.booking.book.Book;
+import com.petProject.booking.booking.Book;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 @Entity
 @Getter
@@ -26,7 +25,7 @@ public class User {
 
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
     @ToString.Exclude
     @OrderBy("bookedData.start DESC")
     private List<Book> books = new ArrayList<>();
