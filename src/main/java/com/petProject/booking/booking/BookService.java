@@ -3,28 +3,22 @@ package com.petProject.booking.booking;
 import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.hotel.HotelMapper;
 import com.petProject.booking.hotel.HotelRepository;
-import com.petProject.booking.hotel.Star;
 import com.petProject.booking.hotel.dto.HotelResponse;
 import com.petProject.booking.room.Room;
-import com.petProject.booking.room.RoomCategory;
 import com.petProject.booking.room.RoomMapper;
 import com.petProject.booking.room.RoomRepository;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.room.dto.RoomResponse;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

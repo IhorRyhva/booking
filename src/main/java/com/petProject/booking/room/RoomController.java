@@ -6,6 +6,8 @@ import com.petProject.booking.room.dto.RoomResponse;
 import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +24,7 @@ public class RoomController {
     private final HotelService hotelService;
 
     @GetMapping("/result")
-    public String result (Model model, @RequestParam List<Long> rooms, HttpSession session) {
+    public String result (Model model, @RequestParam List<Long> rooms, HttpSession session, @AuthenticationPrincipal OidcUser oidcUser) {
         ArrayList<RoomResponse> result = this.roomService.getRoomsById(rooms);
         model.addAttribute("rooms", result);
         model.addAttribute("error", false);
@@ -31,7 +33,7 @@ public class RoomController {
         model.addAttribute("maxPrice", 1000);
         model.addAttribute("minPrice", 0);
         session.setAttribute("rooms", result);
-
+        model.addAttribute("authorizeUser", oidcUser != null);
         return "result";
     }
 

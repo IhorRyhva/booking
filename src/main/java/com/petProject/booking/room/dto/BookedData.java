@@ -17,9 +17,7 @@ public class BookedData {
     private LocalDate end;
 
     public BookedData(LocalDate start, LocalDate end) throws IncorrectBookTimeException {
-        if (start.isBefore(LocalDate.now()) || start.isAfter(end)) {
-            /*TODO**/
-            //catch this exception
+        if ((start.isBefore(LocalDate.now()) || start.isAfter(end)) || start.equals(end)) {
             throw new IncorrectBookTimeException("Check date what you wrote");
         }
         this.start = start;
@@ -35,6 +33,9 @@ public class BookedData {
     }
 
     public boolean timeCrossing (BookedData bookedData) {
+        if (this.start.equals(bookedData.start) && this.end.equals(bookedData.end)) {
+            return true;
+        }
         return this.start.isBefore(bookedData.getEnd()) && this.end.isAfter(bookedData.getStart());
     }
 

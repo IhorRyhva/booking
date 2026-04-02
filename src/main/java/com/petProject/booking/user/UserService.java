@@ -39,4 +39,11 @@ public class UserService {
                 .build());
         return user;
     }
+
+    public User createUser(String email, String userName) {
+        return this.repository.save(User.builder()
+                        .userName(userName)
+                        .email(email)
+                .build());
+    }
 }

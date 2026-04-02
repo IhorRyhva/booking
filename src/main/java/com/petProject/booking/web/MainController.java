@@ -50,7 +50,7 @@ public class MainController {
             @RequestParam String country, @RequestParam String city,
             @RequestParam LocalDate start, @RequestParam LocalDate end, RedirectAttributes redirectAttributes, HttpSession httpSession,
             Model model, @AuthenticationPrincipal OidcUser oidcUser
-    ) throws IOException {
+    ){
         List<Long> rooms;
         try {
             BookedData bookedData = new BookedData(start, end);

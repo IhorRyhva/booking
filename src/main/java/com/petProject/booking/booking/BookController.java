@@ -33,14 +33,14 @@ public class BookController {
     }
 
     @GetMapping("/bookedRoom")
-    public String getUsersBookedRooms (@AuthenticationPrincipal OidcUser oidcUser, Model model) {
-        if (oidcUser == null) {
-            return "redirect:main";
+    public String getUsersBookedRooms (Model model, HttpSession httpSession, @AuthenticationPrincipal OidcUser oidcUser) {
+        if (oidcUser != null) {
+            model.addAttribute("email", oidcUser.getEmail());
+        } else {
+            model.addAttribute("email", httpSession.getAttribute("email"));
         }
-        //TODO
-        model.addAttribute("email", oidcUser.getEmail());
 
-        List<BookResponse> books = bookService.getBooksByUser(oidcUser.getEmail());
+        List<BookResponse> books = bookService.getBooksByUser((String) httpSession.getAttribute("email"));
         model.addAttribute("books", books);
         return "myBooks";
     }
@@ -50,6 +50,10 @@ public class BookController {
                               @RequestParam String nameOfHotel, @RequestParam int number, HttpSession httpSession
                               ) {
         User user = this.userService.getUser(email, userName);
+        if (user == null) {
+            user = this.userService.createUser(email, userName);
+        }
+        httpSession.setAttribute("email", email);
         BookedData bookedData = (BookedData) httpSession.getAttribute("bookedData");
         this.bookService.registerBook(nameOfHotel, number, user, bookedData);
         return "redirect:bookedRoom";

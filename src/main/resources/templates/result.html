@@ -19,6 +19,22 @@
             gap: 30px;
         }
 
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .navbar {
+            background: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
         /* FILTER PANEL */
 
         .filters {
@@ -136,6 +152,20 @@
 </head>
 
 <body>
+
+<div class="navbar">
+    <div class="logo">BookEasy</div>
+    <div class="nav-links" th:if="${!authorizeUser}">
+        <a href="/login">Login</a>
+    </div>
+    <form class="nav-links" th:if="${authorizeUser}" th:action="@{/logout}" method="post">
+        <button>Logout</button>
+    </form>
+
+    <form class="nav-links" th:if="${authorizeUser}">
+        <a href="/bookedRoom">My books</a>
+    </form>
+</div>
 
 <div class="container">
 
