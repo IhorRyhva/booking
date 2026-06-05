@@ -8,15 +8,13 @@
         <version>4.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.petProject</groupId>
+    <groupId>com.ihorRykhva</groupId>
     <artifactId>booking</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>booking</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <!-- Java 25 може бути занадто новою для деяких Spring Boot версій,
-             краще використовувати LTS версії, як-от 17 або 21 -->
         <java.version>25</java.version>
     </properties>
 
@@ -76,20 +74,6 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- Source: https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.22.1</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -106,7 +90,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <!-- Додано конфігурацію компілятора для роботи Lombok AOP -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
