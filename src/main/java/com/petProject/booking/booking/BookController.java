@@ -33,30 +33,26 @@ public class BookController {
     }
 
     @GetMapping("/bookedRoom")
-    public String getUsersBookedRooms (Model model, HttpSession httpSession, @AuthenticationPrincipal OidcUser oidcUser) {
-        if (oidcUser != null) {
-            model.addAttribute("email", oidcUser.getEmail());
-        } else {
-            model.addAttribute("email", httpSession.getAttribute("email"));
-        }
-
-        List<BookResponse> books = bookService.getBooksByUser((String) httpSession.getAttribute("email"));
+    public String getUsersBookedRooms (Model model, @AuthenticationPrincipal OidcUser oidcUser) {
+        model.addAttribute("email", oidcUser.getEmail());
+        List<BookResponse> books = bookService.getBooksByUser(oidcUser.getEmail());
         model.addAttribute("books", books);
         return "myBooks";
     }
 
     @PostMapping("/bookRoom")
     public String addNewBook (@RequestParam String email, @RequestParam String userName,
-                              @RequestParam String nameOfHotel, @RequestParam int number, HttpSession httpSession
+                              @RequestParam String nameOfHotel, @RequestParam int number, HttpSession httpSession,
+                              @AuthenticationPrincipal OidcUser oidcUser
                               ) {
-        User user = this.userService.getUser(email, userName);
-        if (user == null) {
-            user = this.userService.createUser(email, userName);
+        if (oidcUser != null) {
+            BookedData bookedData = (BookedData) httpSession.getAttribute("bookedData");
+            //this.bookService.registerBook(nameOfHotel, number, userService.toUser(oidcUser), bookedData);
+            /**TODO*/
+            return "redirect:bookedRoom";
+        } else {
+            return "redirect:main";
         }
-        httpSession.setAttribute("email", email);
-        BookedData bookedData = (BookedData) httpSession.getAttribute("bookedData");
-        this.bookService.registerBook(nameOfHotel, number, user, bookedData);
-        return "redirect:bookedRoom";
     }
 
     private void addAttributeForPage(OidcUser user, String country, String town, String nameOfHotel, Star star, int number, RoomCategory category, int price, Model model, HttpSession httpSession) {

@@ -27,15 +27,15 @@ public class SecurityConfig {
         handler.setPostLogoutRedirectUri("http://localhost:8080/main");
 
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll())
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
                         .defaultSuccessUrl("/main", true)
                         .userInfoEndpoint(userInfoEndpointConfig ->
                                 userInfoEndpointConfig.oidcUserService(this.bookOidcUserService))
-                )
+                ).authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/bookedRoom").authenticated()
+                        .requestMatchers("/bookRoom", "/main", "/login", "/result").permitAll()
+                        .anyRequest().authenticated())
                 .logout(l -> l.logoutSuccessHandler(handler));
         return http.build();
     }

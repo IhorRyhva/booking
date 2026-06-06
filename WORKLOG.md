@@ -1,0 +1,1 @@
+06.06.2026 identity to principial, turn on csrf and fix a bug in bookMain.html

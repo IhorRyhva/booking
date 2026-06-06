@@ -153,7 +153,7 @@
     <h1 th:if="${!exception}">Find your perfect stay</h1>
     <h1 th:if="${exception}">Please write a correct data</h1>
 
-    <form  method="post" class="search-box" th:if="${!exception}">
+    <form th:action="@{/main}"  method="post" class="search-box" th:if="${!exception}">
       <input type="text" placeholder="Write country" name="country" required>
       <input type="text" placeholder="Write city" name="city">
       <input type="date" name="start" required>
@@ -161,7 +161,7 @@
       <button type="submit">Search</button>
     </form>
 
-    <form  method="post" class="search-box" th:if="${exception}">
+    <form th:action="@{/main}"  method="post" class="search-box" th:if="${exception}">
       <input type="text" th:value="${country}" name="country" required>
       <input type="text" th:value="${city}" name="city">
       <input type="date" name="start" required>
