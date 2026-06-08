@@ -1,3 +1,3 @@
 05.06.2026 book must have unique number 
-06.06.2026 гостьовий потік потребує EmailService
-06.06.2026 Вписування адрес потрібні на майбутнє, але потрібно подумати як це краще зробити, сторінка про успішне бронювання
+06.06.2026 add EmailServer
+06.06.2026 Add DTO for request body of post /bookRoom with email, username field and booked data

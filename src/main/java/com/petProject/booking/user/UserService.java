@@ -46,4 +46,14 @@ public class UserService {
                         .email(email)
                 .build());
     }
+
+    public void ban(String email) {
+        Optional<User> userOptional = this.getUser(email);
+        userOptional.ifPresent(user -> {
+            user.setBaned(true);
+            System.out.println(user.isBaned());
+            this.repository.save(user);
+        });
+    }
+
 }

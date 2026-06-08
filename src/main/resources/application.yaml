@@ -16,7 +16,7 @@ spring:
         registration:
           keycloak:
             client-id: book-client
-            client-secret: 3YlOc89KOY4yu6PUH1tg23SULaP24iGp
+            client-secret: {secret}
             scope:
               - openid
               - profile
@@ -25,7 +25,7 @@ spring:
             redirect-uri: http://localhost:8080/login/oauth2/code/keycloak
         provider:
           keycloak:
-            issuer-uri: http://localhost:8090/realms/booing
+            issuer-uri: http://localhost:8090/realms/booking
             user-name-attribute: preferred_username
   application:
     name: booking

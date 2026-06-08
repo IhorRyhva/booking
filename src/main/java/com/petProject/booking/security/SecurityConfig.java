@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfoEndpointConfig ->
                                 userInfoEndpointConfig.oidcUserService(this.bookOidcUserService))
                 ).authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**").hasAuthority("admin")
                         .requestMatchers("/bookedRoom").authenticated()
                         .requestMatchers("/bookRoom", "/main", "/login", "/result").permitAll()
                         .anyRequest().authenticated())

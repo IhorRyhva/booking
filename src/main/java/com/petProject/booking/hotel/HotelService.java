@@ -55,4 +55,12 @@ public class HotelService {
 
         return newResponses;
     }
+
+    public boolean remove(long id) {
+        if (!this.hotelRepository.existsById(id)) {
+            return false;
+        }
+        this.hotelRepository.removeById(id);
+        return hotelRepository.existsById(id);
+    }
 }

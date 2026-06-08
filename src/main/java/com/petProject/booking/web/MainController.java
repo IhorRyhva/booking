@@ -4,10 +4,12 @@ import com.petProject.booking.hotel.HotelService;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,5 +70,4 @@ public class MainController {
         redirectAttributes.addAttribute("rooms", rooms);
         return "redirect:/result";
     }
-
 }
