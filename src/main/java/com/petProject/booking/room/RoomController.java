@@ -37,6 +37,10 @@ public class RoomController {
         return "result";
     }
 
+
+    /**TODO*
+     * make as in BookController
+     * */
     @PostMapping("/result")
     public String postResult (Model model, HttpSession session, @RequestParam int min, @RequestParam int max, @RequestParam Star star,
                               @RequestParam RoomCategory roomCategory) {

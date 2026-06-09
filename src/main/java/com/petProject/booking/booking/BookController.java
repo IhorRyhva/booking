@@ -6,11 +6,14 @@ import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,17 +44,18 @@ public class BookController {
     }
 
     @PostMapping("/bookRoom")
-    public String addNewBook (@RequestParam String email, @RequestParam String userName,
-                              @RequestParam String nameOfHotel, @RequestParam int number, HttpSession httpSession,
+    public String addNewBook (@Valid BookDTO bookDTO, BindingResult bindingResult, HttpSession httpSession,
                               @AuthenticationPrincipal OidcUser oidcUser
                               ) {
+        if (bindingResult.hasErrors()) return "redirect:main";
+        BookedData bookedData = (BookedData) httpSession.getAttribute("bookedData");
         if (oidcUser != null) {
-            BookedData bookedData = (BookedData) httpSession.getAttribute("bookedData");
-            //this.bookService.registerBook(nameOfHotel, number, userService.toUser(oidcUser), bookedData);
-            /**TODO*/
+            this.bookService.registerBook(bookDTO.nameOfHotel(), bookDTO.number(), userService.addUser(oidcUser), bookedData);
             return "redirect:bookedRoom";
         } else {
-            return "redirect:main";
+            if (bookDTO.email() == null) return "redirect:main";
+            this.bookService.registerBook(bookDTO.nameOfHotel(), bookDTO.number(), null, bookedData);
+            return "redirect:bookRoom";
         }
     }
 

@@ -16,7 +16,7 @@ spring:
         registration:
           keycloak:
             client-id: book-client
-            client-secret: {secret}
+            client-secret: IZVtBNW5ZyyxDzDBtmgQPD4sIBbbfrT7
             scope:
               - openid
               - profile

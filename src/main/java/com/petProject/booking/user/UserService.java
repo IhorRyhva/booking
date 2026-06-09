@@ -13,16 +13,15 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository repository;
 
-    public void addUser(OidcUser user) {
-        if (!repository.existsUserByEmail(user.getEmail())) {
-            repository.save(
-                    User.builder()
-                    .userName(user.getFullName())
-                    .email(user.getEmail())
-                    .role(user.getAuthorities().toString())
-                    .build()
-            );
-        }
+    public User addUser(OidcUser user) {
+        Optional<User> userOptional = this.repository.findByEmail(user.getEmail());
+        return userOptional.orElseGet(() -> repository.save(
+                User.builder()
+                        .userName(user.getFullName())
+                        .email(user.getEmail())
+                        .role(user.getAuthorities().toString())
+                        .build()
+        ));
     }
 
     public Optional<User> getUser (String email) {
