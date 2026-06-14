@@ -35,10 +35,6 @@ public class MainController {
 
     private void extractUserInfo(Model model, OidcUser user) {
         if (user != null) {
-            model.addAttribute("name", user.getFullName());
-            model.addAttribute("username", user.getPreferredUsername());
-            model.addAttribute("email", user.getEmail());
-            model.addAttribute("roles", user.getAuthorities());
             model.addAttribute("authorizeUser", true);
             this.userService.addUser(user);
         } else {
@@ -64,7 +60,7 @@ public class MainController {
             model.addAttribute("country", country);
             model.addAttribute("city", city);
             model.addAttribute("exception", true);
-            this.extractUserInfo(model, oidcUser);
+            model.addAttribute("authorizeUser", oidcUser != null);
             return "bookMain";
         }
         redirectAttributes.addAttribute("rooms", rooms);

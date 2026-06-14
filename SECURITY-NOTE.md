@@ -8,3 +8,5 @@ so 'bad site' can't read it because this action is forbidden by same-origin poli
 5- The server enforce the check, it means that if a user tries to get access to forbidden for him url, server stops him, but if I would just hide it by UI, for user it would be very easy to get access to forbidden url
 6- I also use hasAuthority, not hasRole, because, hasRole add prefix (_ROLE), which isn't in my role, so hasRole doen't match to my roles
 7- I add separated CSRF test, because I have two test which must return 403 (Forbidden), so I must catch which is reason of tests result
+8- For auth user I can extract email from security context, NOT FROM DTO, because user can't give fake email or another data to Security context, so it is safer to use data from 
+security context

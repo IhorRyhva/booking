@@ -1,7 +1,10 @@
 05.06.2026/remove excessive dependency 'Jackson 2'/ because SB4 give me 'Jackson 3' from starter and two version make a conflict
 
-06.06.2026 Гостьове бронювання привʼязується до транзакції, не до email». Контекст — гостям дозволено бронювати без акаунта.
-Рішення — бронювання зберігається без привʼязки до User; email — лише контакт, не ідентичність. 
-Чому — якщо хтось пізніше зареєструє той самий email,
-він не отримає доступ до чужих гостьових бронювань; identity не можна вішати на mutable-контакт
+06.06.2026 Guest bookings are tied to a transaction, not to an email.
+Context - guests are allowed to book without creating an account.
+Decision - the booking is stored without being linked to a User;
+the email is contact information only, not an identity.
+Why - if someone later registers with the same email, they will not gain access to someone else’s guest bookings;
+identity must not be based on a mutable contact detail.
+
 
