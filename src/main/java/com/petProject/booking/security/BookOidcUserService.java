@@ -34,29 +34,34 @@ public class BookOidcUserService extends OidcUserService {
 
         String token = userRequest.getAccessToken().getTokenValue();
         Set<GrantedAuthority> grantedAuthorities = extractRole(token);
-        grantedAuthorities.add(new SimpleGrantedAuthority("user"));
 
         grantedAuthorities.addAll(defaultUser.getAuthorities());
         return new DefaultOidcUser(grantedAuthorities, defaultUser.getIdToken(), defaultUser.getUserInfo());
     }
 
-    private Set<GrantedAuthority> extractRole(String token) {
+    Set<GrantedAuthority> extractRole(String token) {
         Jwt jwt = this.jwtDecoder.decode(token);
         Map<String, Object> resources = jwt.getClaim("resource_access");
 
-        if (resources.isEmpty()) {
+        if (resources == null || resources.isEmpty()) {
             return new HashSet<>();
         }
 
-        Map<String, Object> clientResources = (Map<String, Object>) resources.get(this.clientId);
+        Map<String, Object> clientResources = null;
+        if (resources.get(this.clientId) instanceof Map<?, ?> map) {
+            clientResources = (Map<String, Object>) map;
+        }
 
         if (clientResources == null || clientResources.isEmpty()) {
             return new HashSet<>();
         }
 
-        ArrayList<String> roles = (ArrayList<String>) clientResources.get("roles");
+        List<String> roles = null;
+        if (clientResources.get("roles") instanceof List<?> list) {
+            roles = (List<String>) list;
+        }
 
-        if (roles.isEmpty()) {
+        if (roles == null || roles.isEmpty()) {
             return new HashSet<>();
         }
 

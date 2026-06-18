@@ -10,3 +10,5 @@ so 'bad site' can't read it because this action is forbidden by same-origin poli
 7- I add separated CSRF test, because I have two test which must return 403 (Forbidden), so I must catch which is reason of tests result
 8- For auth user I can extract email from security context, NOT FROM DTO, because user can't give fake email or another data to Security context, so it is safer to use data from 
 security context
+9- My method extractRole(String token) catch only NULL structure-element, if some element is NULL my method return empty Set, because FAKE JWT will be caught in decode(), 
+and if inside JWT's structure is incorrect data, this error will be thrown on the end of the method
