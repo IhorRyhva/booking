@@ -5,4 +5,5 @@
 11.06.2026 book logic for not-auth user
 14.06.2026 change return result after correct book for not-auth user
 18.06.2026 add admin window and use sec:authorize
-20.06.2026 CRUD admin for hotel, dan user and CRUD for book at the admin side.
+20.06.2026 CRUD admin for hotel, ban user and CRUD for book at the admin side.
+20.06.2026 soft delete for hotels

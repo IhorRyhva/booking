@@ -13,11 +13,11 @@ public class HotelController {
     private final HotelService hotelService;
     private final UserService userService;
 
-    @DeleteMapping("/hotel/{id}/delete")
-    public String deleteHotel(@PathVariable long id, Model model) {
-        boolean isRemoved = this.hotelService.remove(id);
-        model.addAttribute("isRemoved", isRemoved);
-        return "redirect:admin";
+    /**TODO* change to DeleteMapping and id to long*/
+    @PostMapping("/hotel/delete")
+    public String deleteHotel(@RequestParam int id) {
+        this.hotelService.remove(id);
+        return "redirect:/admin";
     }
 
     @PutMapping("/user/ban/{email}")

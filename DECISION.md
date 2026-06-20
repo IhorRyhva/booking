@@ -16,3 +16,6 @@ but I want test extractRole in isolate, so for this I made extractRole package-p
 
 20.06.2026 How did I enforce admin access only for /admin/**. I did it in SecurityConfig with hasAuthority("admin"). I checked it works with negative test
 nonAdminCannotDelete(). UI hiding is only UX - server side is the real boundary
+
+20.06.2026 Why do I have both UI-level authorize (sec:authorize) and server-side enforcement? The reason is, that first
+I use for better UX, but to prevent bypass with Dev-tools or Postman I must cover it with server-side enforcement.

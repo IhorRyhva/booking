@@ -9,3 +9,4 @@ addingAttributeForPage "BookController" create new BookDTO, but for auth branch 
 addingAttributeForPage after add current BookDTO from current page, this is weak site of POST mapping /bookRoom
 20.06.2026 logout-url move to the @Value + .yaml. Admin hotel/delete enforced server-side. I covered it with test
 and verified correct works of these tests by breaking enforcement and they went red
+20.06.2026 Added admin.html and for UX, I made that only user with admin authorized can see button "Admin panel", with sec:authority="hasAuthorize('admin')"

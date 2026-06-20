@@ -4,6 +4,7 @@ import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
 import com.petProject.booking.room.*;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.room.dto.RoomResponse;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -56,11 +57,12 @@ public class HotelService {
         return newResponses;
     }
 
-    public boolean remove(long id) {
-        if (!this.hotelRepository.existsById(id)) {
+    @Transactional
+    public boolean remove(int id) {
+        if (!this.hotelRepository.existsById((long) id)) {
             return false;
         }
-        this.hotelRepository.removeById(id);
-        return hotelRepository.existsById(id);
+        this.hotelRepository.removeById((long) id);
+        return hotelRepository.existsById((long) id);
     }
 }

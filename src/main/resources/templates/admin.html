@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head><title>Admin</title></head>
+    <body>
+    <h1>Admin panel</h1>
+
+    <form th:action="@{admin/hotel/delete}" method="post">
+        <input placeholder="Hotels ID" name="id" type="number" required>
+        <button type="submit">Delete hotel</button>
+    </form>
+    </body>
+</html>

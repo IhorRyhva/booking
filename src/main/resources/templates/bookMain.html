@@ -140,6 +140,7 @@
   </div>
   <form class="nav-links" th:if="${authorizeUser}" th:action="@{/logout}" method="post">
     <button>Logout</button>
+    <a th:href="@{/admin}" sec:authorize="hasAuthority('admin')">Admin panel</a>
   </form>
 
   <form class="nav-links" th:if="${authorizeUser}">
