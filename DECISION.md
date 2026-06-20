@@ -13,3 +13,6 @@ authorization for this user must be interrupted
 18.06.2026 Why extractRole is package-private? The reason is I want test methods extractRole(String token), though public methods loadUser(OidcUserRequest userRequest),
 but for testing this method it is dependent on Keycloack, because loadUser(OidcUserRequest userRequest) call super.loadUser(), which works through Keycloak,
 but I want test extractRole in isolate, so for this I made extractRole package-private
+
+20.06.2026 How did I enforce admin access only for /admin/**. I did it in SecurityConfig with hasAuthority("admin"). I checked it works with negative test
+nonAdminCannotDelete(). UI hiding is only UX - server side is the real boundary

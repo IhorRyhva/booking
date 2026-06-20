@@ -7,3 +7,5 @@ a negative test, a test where I checked corrects of working CSRF and test where 
 14.06.2026 Today I added test which prove correct work of ny book methods, it checks that user can't make book without email
 addingAttributeForPage "BookController" create new BookDTO, but for auth branch when we return to same page we must give all models attributes, so firstly we use 
 addingAttributeForPage after add current BookDTO from current page, this is weak site of POST mapping /bookRoom
+20.06.2026 logout-url move to the @Value + .yaml. Admin hotel/delete enforced server-side. I covered it with test
+and verified correct works of these tests by breaking enforcement and they went red

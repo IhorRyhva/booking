@@ -4,4 +4,5 @@
 ~~11.06.2026 fix response with incorrect book data~~
 11.06.2026 book logic for not-auth user
 14.06.2026 change return result after correct book for not-auth user
-18.06 add admin window and use sec:authorize
+18.06.2026 add admin window and use sec:authorize
+20.06.2026 CRUD admin for hotel, dan user and CRUD for book at the admin side.
