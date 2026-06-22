@@ -2,6 +2,7 @@ package com.petProject.booking.room;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.petProject.booking.booking.Book;
 import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.room.dto.BookedData;
 import jakarta.persistence.*;
@@ -21,7 +22,8 @@ import java.util.List;
 @JsonAutoDetect
 public class Room  {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "room_seq", sequenceName = "room_seq_name", allocationSize = 50)
     private Long id;
 
     private int price;
@@ -34,9 +36,12 @@ public class Room  {
     private List<BookedData> bookedData = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "hotel-id")
+    @JoinColumn(name = "hotel_id")
     @JsonBackReference
     private Hotel hotel;
+
+    @OneToMany(mappedBy = "room")
+    private List<Book> books;
 
     @Override
     public String toString() {

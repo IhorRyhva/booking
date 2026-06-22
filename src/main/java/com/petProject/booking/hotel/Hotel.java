@@ -17,7 +17,8 @@ import java.util.List;
 @JsonAutoDetect
 public class Hotel {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "hotel_seq", sequenceName = "hotel_seq_name", allocationSize = 50)
     private Long id;
 
     private String nameOfHotel;
@@ -27,7 +28,7 @@ public class Hotel {
     @Embedded
     private Location location;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "hotel")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "hotel")
     @JsonManagedReference
     private List<Room> rooms;
 

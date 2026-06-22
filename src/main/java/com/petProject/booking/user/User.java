@@ -16,20 +16,20 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "user_seq", sequenceName = "user_seq_name", allocationSize = 50)
     private Long id;
 
     private String userName;
 
-    private String role;
-
     @Column(unique = true)
     private String email;
 
-    private boolean isBaned = false;
+    private boolean isBanned = false;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
     @ToString.Exclude
     @OrderBy("bookedData.start DESC")
     private List<Book> books = new ArrayList<>();
+
 }
