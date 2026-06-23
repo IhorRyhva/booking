@@ -9,16 +9,15 @@ services:
     ports:
       - "8090:8080"
   db:
-    image: mysql:8.0
-    restart: always
+    image: postgres:18.4
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: 1111
-      MYSQL_DATABASE: booking
-      MYSQL_USER: booking_user
-      MYSQL_PASSWORD: booking_pass
+      POSTGRES_USER: ihor
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: booking
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql
 volumes:
   db_data:

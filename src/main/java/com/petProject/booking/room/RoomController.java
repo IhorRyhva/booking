@@ -25,7 +25,7 @@ public class RoomController {
 
     @GetMapping("/result")
     public String result (Model model, @RequestParam List<Long> rooms, HttpSession session, @AuthenticationPrincipal OidcUser oidcUser) {
-        ArrayList<RoomResponse> result = this.roomService.getRoomsById(rooms);
+        List<RoomResponse> result = this.roomService.getRoomsById(rooms);
         model.addAttribute("rooms", result);
         model.addAttribute("error", false);
         model.addAttribute("star", Star.ANY);

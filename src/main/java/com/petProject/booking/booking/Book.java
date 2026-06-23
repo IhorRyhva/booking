@@ -2,7 +2,6 @@ package com.petProject.booking.booking;
 
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.dto.BookedData;
-import com.petProject.booking.room.dto.RoomResponse;
 import com.petProject.booking.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +16,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "book_seq", sequenceName = "seq_name_book", allocationSize = 50)
+    @SequenceGenerator(name = "book_seq", sequenceName = "book_seq_name", allocationSize = 50)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -32,6 +31,6 @@ public class Book {
     private RoomInfo roomInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "room_id", nullable = true)
     private Room room;
 }

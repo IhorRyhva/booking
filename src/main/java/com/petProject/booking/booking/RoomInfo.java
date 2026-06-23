@@ -5,7 +5,6 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public record RoomInfo(
-        BookedData bookedData,
         int price,
         String hotelName
 ) {

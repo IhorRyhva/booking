@@ -41,8 +41,8 @@ public class RoomService {
         return result;
     }
 
-    public ArrayList<RoomResponse> getRoomsById(List<Long> rooms) {
-        ArrayList<Room> result = new ArrayList<>();
+    public List<RoomResponse> getRoomsById(List<Long> rooms) {
+        List<Room> result = new ArrayList<>();
         for (Long id: rooms) {
             Optional<Room> room = this.roomRepository.findById(id);
             room.ifPresent(result::add);

@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "users")
 public class User {
 
     @Id
@@ -29,7 +30,7 @@ public class User {
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
     @ToString.Exclude
-    @OrderBy("bookedData.start DESC")
+    @OrderBy("bookedData.startDate DESC")
     private List<Book> books = new ArrayList<>();
 
 }

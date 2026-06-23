@@ -40,7 +40,7 @@ public class BookService {
                 .map(u -> u.getBooks().stream()
                         .map(book -> BookResponse.builder()
                                 .bookedData(book.getBookedData())
-                                .room(book.getRoom())
+                                .room(roomMapper.toResponse(book.getRoom()))
                                 .build())
                         .toList()
                 ).orElseGet(ArrayList::new);
@@ -52,10 +52,9 @@ public class BookService {
 
     @Transactional
     public void registerBook(String nameOfHotel, int number, User user, BookedData bookedData) {
-        RoomResponse room = bookRoomAndCreateResponse(nameOfHotel, number, bookedData);
         Book book = Book.builder()
                 .user(user)
-                .room(room)
+//                .room(room)
                 .bookedData(bookedData)
                 .build();
         user.getBooks().add(book);

@@ -19,7 +19,6 @@ public class UserService {
                 User.builder()
                         .userName(user.getFullName())
                         .email(user.getEmail())
-                        .role(user.getAuthorities().toString())
                         .build()
         ));
     }
@@ -33,7 +32,6 @@ public class UserService {
         User user = optionalUser.orElseGet(() -> User.builder()
                 .email(email)
                 .userName(userName)
-                .role("")
                 .books(new ArrayList<>())
                 .build());
         return user;
@@ -49,8 +47,8 @@ public class UserService {
     public void ban(String email) {
         Optional<User> userOptional = this.getUser(email);
         userOptional.ifPresent(user -> {
-            user.setBaned(true);
-            System.out.println(user.isBaned());
+            user.setBanned(true);
+            System.out.println(user.isBanned());
             this.repository.save(user);
         });
     }

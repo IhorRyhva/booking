@@ -13,15 +13,15 @@ import java.util.Objects;
 @JsonAutoDetect
 public class BookedData {
 
-    private LocalDate start;
-    private LocalDate end;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
-    public BookedData(LocalDate start, LocalDate end) throws IncorrectBookTimeException {
-        if ((start.isBefore(LocalDate.now()) || start.isAfter(end)) || start.equals(end)) {
+    public BookedData(LocalDate startDate, LocalDate endDate) throws IncorrectBookTimeException {
+        if ((startDate.isBefore(LocalDate.now()) || startDate.isAfter(endDate)) || startDate.equals(endDate)) {
             throw new IncorrectBookTimeException("Check date what you wrote");
         }
-        this.start = start;
-        this.end = end;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public BookedData() {
@@ -29,25 +29,25 @@ public class BookedData {
 
     @Override
     public String toString() {
-        return "start: " + start + ", end: " + end ;
+        return "start: " + startDate + ", end: " + endDate;
     }
 
     public boolean timeCrossing (BookedData bookedData) {
-        if (this.start.equals(bookedData.start) && this.end.equals(bookedData.end)) {
+        if (this.startDate.equals(bookedData.startDate) && this.endDate.equals(bookedData.endDate)) {
             return true;
         }
-        return this.start.isBefore(bookedData.getEnd()) && this.end.isAfter(bookedData.getStart());
+        return this.startDate.isBefore(bookedData.getEndDate()) && this.endDate.isAfter(bookedData.getStartDate());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BookedData that = (BookedData) o;
-        return Objects.equals(start, that.start) && Objects.equals(end, that.end);
+        return Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(start, end);
+        return Objects.hash(startDate, endDate);
     }
 }
