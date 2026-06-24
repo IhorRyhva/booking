@@ -7,3 +7,4 @@
 18.06.2026 add admin window and use sec:authorize
 20.06.2026 CRUD admin for hotel, ban user and CRUD for book at the admin side.
 20.06.2026 soft delete for hotels
+24.06.2026 BookedData maybe must be changed into BookPeriod

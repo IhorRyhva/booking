@@ -19,3 +19,13 @@ nonAdminCannotDelete(). UI hiding is only UX - server side is the real boundary
 
 20.06.2026 Why do I have both UI-level authorize (sec:authorize) and server-side enforcement? The reason is, that first
 I use for better UX, but to prevent bypass with Dev-tools or Postman I must cover it with server-side enforcement.
+
+24.06.2026 Why @DataJpaTest not a @SpringBootTest:
+@SpringBootTest load the whole context and due to this my test fails on Security level, because it depends on KeyCloack,
+so to avoid this problem I decided made my test isolated on DB layer and for this task I chose to use DataJpaTest, 
+which doesn't load the whole program context and is created for this kind of test.
+For using my @Container postgresql db, I must turn off default H2 db through AutoConfigureTestDatabase.
+
+24.06.2026 Why this static block static { TimeZone.setDefault(TimeZone.getTimeZone("UTC")); }?
+I must add it, because PG tzdata doesn't know about TZ "Europe/Kiev", because it was renamed into "Europe/Kyiv", but default
+JVM TZ is "Europe/Kiev", so it make conflict. For avoiding this I wrote  static { TimeZone.setDefault(TimeZone.getTimeZone("UTC")); }
