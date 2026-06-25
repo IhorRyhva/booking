@@ -33,15 +33,15 @@ public class HotelMapper {
                 .build();
     }
 
-    public void filterByStar(Star star, ArrayList<RoomResponse> responses) {
+    public void filterByStar(Star star, ArrayList<Room> responses) {
         if (star != Star.ANY) {
-            responses.removeIf(roomResponse -> roomResponse.hotel().star() != star);
+            responses.removeIf(room -> room.getHotel().getStar() != star);
         }
     }
 
-    public void filterByCategory(RoomCategory roomCategory, ArrayList<RoomResponse> newResponses) {
+    public void filterByCategory(RoomCategory roomCategory, ArrayList<Room> newResponses) {
         if (roomCategory != RoomCategory.ANY) {
-            newResponses.removeIf(roomResponse -> roomResponse.roomCategory() != roomCategory);
+            newResponses.removeIf(room -> room.getCategory() != roomCategory);
         }
     }
 

@@ -32,14 +32,6 @@ public class RoomMapper {
         return rooms.stream().map(Room::getId).toList();
     }
 
-    public List<RoomResponse> toResponse(List<Room> result) {
-        List<RoomResponse> roomResponses = new ArrayList<>();
-
-        for (Room room: result) {
-            roomResponses.add(getRoom(room));
-        }
-        return roomResponses;
-    }
 
     public RoomResponse getResponse(Room room, HotelResponse hotel, int number) {
         return RoomResponse.builder()

@@ -6,16 +6,14 @@ import com.petProject.booking.booking.Book;
 import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.room.dto.BookedData;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

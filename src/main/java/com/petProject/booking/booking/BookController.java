@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,8 +25,8 @@ public class BookController {
     private final UserService userService;
 
     @GetMapping("/bookRoom")
-    public String formForBook (@AuthenticationPrincipal OidcUser user, @ModelAttribute SortDTO sortDTO, Model model, HttpSession httpSession) {
-        this.addAttributeForPage(user, sortDTO, model, httpSession);
+    public String formForBook (@AuthenticationPrincipal OidcUser user, @RequestParam long roomId, Model model, HttpSession httpSession) {
+        this.addAttributeForPage(user, roomId, model, httpSession);
         return "bookRoom";
     }
 
@@ -38,12 +39,12 @@ public class BookController {
     }
 
     @PostMapping("/bookRoom")
-    public String addNewBook (@ModelAttribute("bookDTO") @Valid BookDTO bookDTO, @ModelAttribute SortDTO sortDTO,
+    public String addNewBook (@ModelAttribute("bookDTO") @Valid BookDTO bookDTO, @RequestParam long roomId,
                               BindingResult bindingResult, HttpSession httpSession,
                               @AuthenticationPrincipal OidcUser oidcUser, Model model
                               ) {
         if (bindingResult.hasErrors()) {
-            this.addAttributeForPage(oidcUser, sortDTO, model, httpSession);
+            this.addAttributeForPage(oidcUser, , model, httpSession);
             model.addAttribute("bookDTO", bookDTO);
             return "bookRoom";
         }
@@ -53,31 +54,25 @@ public class BookController {
             return "redirect:bookedRoom";
         } else {
             if (bookDTO.getEmail() == null || bookDTO.getEmail().isBlank()) {
-                this.addAttributeForPage(null, sortDTO, model, httpSession);
+                this.addAttributeForPage(null, , model, httpSession);
                 model.addAttribute("bookDTO", bookDTO);
                 return "bookRoom";
             }
             /**TODO*Add register book logic for unauth user*/
             this.bookService.registerBook(bookDTO.getNameOfHotel(), bookDTO.getNumber(), null, bookedData);
             /**TODO* change redirect and add email service */
-            this.addAttributeForPage(null, sortDTO, model, httpSession);
+            this.addAttributeForPage(null, , model, httpSession);
             model.addAttribute("bookDTO", bookDTO);
             return "bookRoom";
         }
     }
 
-    private void addAttributeForPage(OidcUser user, SortDTO sortDTO,Model model, HttpSession httpSession) {
+    private void addAttributeForPage(OidcUser user, long id, Model model, HttpSession httpSession) {
         String start = this.bookService.getFormattedDate((LocalDate) httpSession.getAttribute("start"));
         String end = this.bookService.getFormattedDate((LocalDate) httpSession.getAttribute("end"));
         model.addAttribute("start", start);
         model.addAttribute("end", end);
-        model.addAttribute("country", sortDTO.getCountry());
-        model.addAttribute("town", sortDTO.getTown());
-        model.addAttribute("nameOfHotel", sortDTO.getNameOfHotel());
-        model.addAttribute("star", sortDTO.getStar());
-        model.addAttribute("number", sortDTO.getNumber());
-        model.addAttribute("category", sortDTO.getCategory());
-        model.addAttribute("price", sortDTO.getPrice());
+        model.addAttribute("roomId", id);
 
         if(user != null) {
             model.addAttribute("authorized", true);

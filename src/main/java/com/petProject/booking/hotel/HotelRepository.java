@@ -10,8 +10,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     boolean existsHotelByNameOfHotel(String nameOfHotel);
     Hotel getHotelByNameOfHotel(String nameOfHotel);
 
-    List<Hotel> getHotelByStar(Star star);
-
     boolean existsById(Long id);
 
     void removeById(Long id);

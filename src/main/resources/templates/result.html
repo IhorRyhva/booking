@@ -228,18 +228,18 @@
         <div th:each="room : ${rooms}" class="card">
 
             <div class="card-left">
-                <h3 th:text="${room.hotel().nameOfHotel()}"></h3>
+                <h3 th:text="${room.getHotel().getNameOfHotel()}"></h3>
                 <p>
                     🌟 Stars:
-                    <span th:text="${room.hotel().star()}"></span>
+                    <span th:text="${room.getHotel().getStar()}"></span>
                 </p>
                 <p>
                     🛏️ Category:
-                    <span th:text="${room.roomCategory()}"></span>
+                    <span th:text="${room.getCategory()}"></span>
                 </p>
                 <p>
                     Room №
-                    <span th:text="${room.number()}"></span>
+                    <span th:text="${room.getNumber()}"></span>
                 </p>
             </div>
 
@@ -248,13 +248,7 @@
                     <span th:text="${room.price()}"></span> $
                 </div>
                 <form method="get" th:action="@{/bookRoom}">
-                    <input type="hidden" name="country" th:value="${room.hotel().location().country()}">
-                    <input type="hidden" name="town" th:value="${room.hotel().location().town()}">
-                    <input type="hidden" name="nameOfHotel" th:value="${room.hotel().nameOfHotel()}">
-                    <input type="hidden" name="star" th:value="${room.hotel().star()}">
-                    <input type="hidden" name="category" th:value="${room.roomCategory()}">
-                    <input type="hidden" name="number" th:value="${room.number()}">
-                    <input type="hidden" name="price" th:value="${room.price()}">
+                    <input type="hidden" name="roomId" th:value="${room.getId()}">
                     <button type="submit" class="book-btn">Book now</button>
                 </form>
             </div>

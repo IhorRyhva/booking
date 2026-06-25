@@ -3,12 +3,10 @@ package com.petProject.booking.booking;
 import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.hotel.HotelMapper;
 import com.petProject.booking.hotel.HotelRepository;
-import com.petProject.booking.hotel.dto.HotelResponse;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomMapper;
 import com.petProject.booking.room.RoomRepository;
 import com.petProject.booking.room.dto.BookedData;
-import com.petProject.booking.room.dto.RoomResponse;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -27,7 +25,6 @@ public class BookService {
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
-    private final HotelMapper hotelMapper;
     private final BookRepository bookRepository;
 
     /*TODO: sort bookings by start date*/
@@ -54,18 +51,13 @@ public class BookService {
     public void registerBook(String nameOfHotel, int number, User user, BookedData bookedData) {
         Book book = Book.builder()
                 .user(user)
-//                .room(room)
+                .roomInfo(new RoomInfo())
                 .bookedData(bookedData)
                 .build();
         user.getBooks().add(book);
         this.bookRepository.save(book);
     }
 
-    private RoomResponse bookRoomAndCreateResponse(String nameOfHotel, int number, BookedData bookedData) {
-        Room room = bookRoom(nameOfHotel, number, bookedData);
-        HotelResponse hotel = this.hotelMapper.getHotelResponse(nameOfHotel, room);
-        return this.roomMapper.getResponse(room, hotel, number);
-    }
 
     private Room bookRoom(String nameOfHotel, int number, BookedData bookedData) {
         Hotel hotel = this.hotelRepository.getHotelByNameOfHotel(nameOfHotel);

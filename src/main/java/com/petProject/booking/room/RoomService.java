@@ -2,7 +2,6 @@ package com.petProject.booking.room;
 
 import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
 import com.petProject.booking.room.dto.BookedData;
-import com.petProject.booking.room.dto.RoomResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +12,13 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class RoomService {
-   private final RoomMapper roomMapper;
    private final RoomRepository roomRepository;
 
-    public void filterByPrice(int min, int max, ArrayList<RoomResponse> newResponses) throws IncorrectMaxMinPriceException {
+    public void filterByPrice(int min, int max, ArrayList<Room> newResponses) throws IncorrectMaxMinPriceException {
         if (min < 0 || min > max) {
             throw new IncorrectMaxMinPriceException("Please check your min and max price");
         }
-        newResponses.removeIf(room -> (room.price() < min || room.price() >= max));
+        newResponses.removeIf(room -> (room.getPrice() < min || room.getPrice() >= max));
     }
 
     public List<Room> getRoomByData (BookedData bookedData, List<Room> rooms) {
@@ -41,12 +39,12 @@ public class RoomService {
         return result;
     }
 
-    public List<RoomResponse> getRoomsById(List<Long> rooms) {
+    public List<Room> getRoomsById(List<Long> rooms) {
         List<Room> result = new ArrayList<>();
         for (Long id: rooms) {
             Optional<Room> room = this.roomRepository.findById(id);
             room.ifPresent(result::add);
         }
-        return this.roomMapper.toResponse(result);
+        return result;
     }
 }

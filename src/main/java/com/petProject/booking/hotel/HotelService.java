@@ -3,7 +3,6 @@ package com.petProject.booking.hotel;
 import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
 import com.petProject.booking.room.*;
 import com.petProject.booking.room.dto.BookedData;
-import com.petProject.booking.room.dto.RoomResponse;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,8 +47,8 @@ public class HotelService {
         return rooms;
     }
 
-    public ArrayList<RoomResponse> getRoomsByAnotherInput(int min, int max, Star star, RoomCategory roomCategory, ArrayList<RoomResponse> responses) throws IncorrectMaxMinPriceException {
-        ArrayList<RoomResponse> newResponses = (ArrayList<RoomResponse>) responses.clone();
+    public ArrayList<Room> getRoomsByAnotherInput(int min, int max, Star star, RoomCategory roomCategory, ArrayList<Room> responses) throws IncorrectMaxMinPriceException {
+        ArrayList<Room> newResponses = (ArrayList<Room>) responses.clone();
         this.hotelMapper.filterByStar(star, newResponses);
         this.hotelMapper.filterByCategory(roomCategory, newResponses);
         this.roomService.filterByPrice(min, max, newResponses);

@@ -25,8 +25,7 @@ public class RoomController {
 
     @GetMapping("/result")
     public String result (Model model, @RequestParam List<Long> rooms, HttpSession session, @AuthenticationPrincipal OidcUser oidcUser) {
-        List<RoomResponse> result = this.roomService.getRoomsById(rooms);
-        model.addAttribute("rooms", result);
+        List<Room> result = this.roomService.getRoomsById(rooms);
         model.addAttribute("error", false);
         model.addAttribute("star", Star.ANY);
         model.addAttribute("roomCategory", RoomCategory.ANY);
@@ -44,8 +43,8 @@ public class RoomController {
     @PostMapping("/result")
     public String postResult (Model model, HttpSession session, @RequestParam int min, @RequestParam int max, @RequestParam Star star,
                               @RequestParam RoomCategory roomCategory) {
-        ArrayList<RoomResponse> newResponses = new ArrayList<>();
-        newResponses.addAll((ArrayList<RoomResponse>) session.getAttribute("rooms"));
+        ArrayList<Room> newResponses = new ArrayList<>();
+        newResponses.addAll((ArrayList<Room>) session.getAttribute("rooms"));
         model.addAttribute("star", star);
         model.addAttribute("roomCategory", roomCategory);
         try {
@@ -54,7 +53,7 @@ public class RoomController {
             model.addAttribute("maxPrice", max);
             model.addAttribute("minPrice", min);
         } catch (IncorrectMaxMinPriceException e) {
-            ArrayList<RoomResponse> responses = (ArrayList<RoomResponse>) session.getAttribute("rooms");
+            ArrayList<Room> responses = (ArrayList<Room>) session.getAttribute("rooms");
             model.addAttribute("rooms", responses);
             model.addAttribute("error", true);
             model.addAttribute("maxPrice", 1000);
