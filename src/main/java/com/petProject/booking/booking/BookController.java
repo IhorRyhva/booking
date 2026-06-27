@@ -1,5 +1,6 @@
 package com.petProject.booking.booking;
 
+import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.room.*;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.user.UserService;
@@ -44,24 +45,24 @@ public class BookController {
                               @AuthenticationPrincipal OidcUser oidcUser, Model model
                               ) {
         if (bindingResult.hasErrors()) {
-            this.addAttributeForPage(oidcUser, , model, httpSession);
+            this.addAttributeForPage(oidcUser, roomId, model, httpSession);
             model.addAttribute("bookDTO", bookDTO);
             return "bookRoom";
         }
         BookedData bookedData = (BookedData) httpSession.getAttribute("bookedData");
         if (oidcUser != null) {
-            this.bookService.registerBook(bookDTO.getNameOfHotel(), bookDTO.getNumber(), userService.addUser(oidcUser), bookedData);
+            this.bookService.registerBook(bookDTO.getEmail(), bookedData, roomId);
             return "redirect:bookedRoom";
         } else {
             if (bookDTO.getEmail() == null || bookDTO.getEmail().isBlank()) {
-                this.addAttributeForPage(null, , model, httpSession);
+                this.addAttributeForPage(null, roomId, model, httpSession);
                 model.addAttribute("bookDTO", bookDTO);
                 return "bookRoom";
             }
             /**TODO*Add register book logic for unauth user*/
-            this.bookService.registerBook(bookDTO.getNameOfHotel(), bookDTO.getNumber(), null, bookedData);
+            this.bookService.registerBook(bookDTO.getEmail(), bookedData, roomId);
             /**TODO* change redirect and add email service */
-            this.addAttributeForPage(null, , model, httpSession);
+            this.bookService.registerBook(bookDTO.getEmail(), bookedData, roomId);
             model.addAttribute("bookDTO", bookDTO);
             return "bookRoom";
         }
@@ -73,6 +74,15 @@ public class BookController {
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         model.addAttribute("roomId", id);
+        Room room = this.bookService.getRoom(id);
+        Hotel hotel = room.getHotel();
+        model.addAttribute("country", hotel.getLocation().town());
+        model.addAttribute("town", hotel.getLocation().town());
+        model.addAttribute("nameOfHotel", hotel.getNameOfHotel());
+        model.addAttribute("star", hotel.getStar());
+        model.addAttribute("number", room.getNumber());
+        model.addAttribute("category", room.getCategory());
+        model.addAttribute("price", room.getPrice());
 
         if(user != null) {
             model.addAttribute("authorized", true);

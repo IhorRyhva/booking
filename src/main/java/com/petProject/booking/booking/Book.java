@@ -8,10 +8,7 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Book {
 
     @Id
@@ -31,6 +28,13 @@ public class Book {
     private RoomInfo roomInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", nullable = true)
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
+
+    public Book(User user, BookedData bookedData, Room room) {
+        this.user = user;
+        this.bookedData = bookedData;
+        this.room = room;
+        this.roomInfo = new RoomInfo(room.getPrice(), room.getHotel().getNameOfHotel(), room.getNumber());
+    }
 }

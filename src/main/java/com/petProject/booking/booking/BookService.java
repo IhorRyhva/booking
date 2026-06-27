@@ -1,7 +1,6 @@
 package com.petProject.booking.booking;
 
 import com.petProject.booking.hotel.Hotel;
-import com.petProject.booking.hotel.HotelMapper;
 import com.petProject.booking.hotel.HotelRepository;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomMapper;
@@ -17,12 +16,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BookService {
     private final UserRepository userRepository;
-    private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
     private final BookRepository bookRepository;
@@ -48,26 +47,22 @@ public class BookService {
     }
 
     @Transactional
-    public void registerBook(String nameOfHotel, int number, User user, BookedData bookedData) {
-        Book book = Book.builder()
-                .user(user)
-                .roomInfo(new RoomInfo())
-                .bookedData(bookedData)
-                .build();
-        user.getBooks().add(book);
+    public void registerBook(String email, BookedData bookedData, long roomId) {
+        Optional<Room> roomOptional = this.roomRepository.findById(roomId);
+        if (roomOptional.isEmpty()) throw new RuntimeException(); /**TODO* Change here this logic*/
+        Room room = roomOptional.get();
+        Optional<User> userOptional = this.userRepository.findByEmail(email);
+        /**TODO*null юзер означає що користувач незареєстрований і для цього треба окрему логіку придумати*/
+        Book book = new Book(userOptional.get(), bookedData, room); /**TODO*userOptional.get() тимчасове рішення*/
+        this.bookRoom(room, bookedData);
+        userOptional.get().getBooks().add(book);
         this.bookRepository.save(book);
     }
 
 
-    private Room bookRoom(String nameOfHotel, int number, BookedData bookedData) {
-        Hotel hotel = this.hotelRepository.getHotelByNameOfHotel(nameOfHotel);
-        if (hotel == null) {
-            throw new IllegalArgumentException("Hotel " + nameOfHotel + " doesn't exist");
-        }
-
-        Room room = this.roomRepository.findRoomByHotelAndNumber(hotel, number);
+    private Room bookRoom(Room room,  BookedData bookedData) {
         if (room == null) {
-            throw new IllegalArgumentException("Room " + number + " in the hotel " + nameOfHotel + " doesn't exist");
+            throw new IllegalArgumentException();
         }
 
         if (bookedData == null) {
@@ -78,4 +73,8 @@ public class BookService {
         return room;
     }
 
+    public Room getRoom(long id) {
+        /**TODO* додай тут помилку */
+        return this.roomRepository.findById(id).get();
+    }
 }
