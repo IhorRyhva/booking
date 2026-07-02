@@ -29,3 +29,17 @@ For using my @Container postgresql db, I must turn off default H2 db through Aut
 24.06.2026 Why this static block static { TimeZone.setDefault(TimeZone.getTimeZone("UTC")); }?
 I must add it, because PG tzdata doesn't know about TZ "Europe/Kiev", because it was renamed into "Europe/Kyiv", but default
 JVM TZ is "Europe/Kiev", so it make conflict. For avoiding this I wrote  static { TimeZone.setDefault(TimeZone.getTimeZone("UTC")); }
+
+26.06.2026 Why a RoomInfo snapshot if Book already has FK to Room?
+RoomInfo was created for user's booking-history. How it works? When a user makes a booking my server creates an object RoomInfo, which store 
+price, hotel name and a room number at the moment of booking. And main advantage of this object is that it doesn't depend on Room's FK and even if this
+room is later deleted from DB, our user still has this book in his history.
+
+Why is the immutability guarantee in the Book constructor, not in the service?
+Because only the Book constructor can guarantee that RoomInfo is always built in one place (Book's constructor), by one rule and will not be changed.
+And I removed a Setter, Builder, AllArgsConstructor, in reason to remove possibility of changing any Book's field
+and make NoArgsConstructor protected access for Hibernate. Next Book's constructor create RoomInfo inside from Room so it is impossible inject fake RoomInfo
+
+Why is RoomInfo a record (embeddable)?
+To guarantee immutability I would need make all fields private final and settable only through
+the constructor. And here appear reason why I choose record, it does by language definition: all fields are private final and settable only though a constructor.

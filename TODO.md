@@ -8,3 +8,6 @@
 20.06.2026 CRUD admin for hotel, ban user and CRUD for book at the admin side.
 20.06.2026 soft delete for hotels
 24.06.2026 BookedData maybe must be changed into BookPeriod
+26.06.2026  registerBook: double call in guest branch → duplicate bookings
+registerBook: userOptional.get() throws on unauthenticated user
+guest-booking flow not implemented (separate block, after JPA)
