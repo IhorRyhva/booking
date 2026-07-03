@@ -34,8 +34,8 @@ public class HotelService {
         List<Hotel> hotels = this.hotelMapper.getHotelByLocation(country, city, this.hotelRepository.findAll());
 
         List<Room> rooms = getRoomList(hotels);
-        rooms = this.roomService.getRoomByData(bookedData, rooms);
-
+        //rooms = this.roomService.getRoomByData(bookedData, rooms);
+        /*TODO*getRoomByData will be work in the db side**/
         return this.roomMapper.getRoomId(rooms);
     }
 

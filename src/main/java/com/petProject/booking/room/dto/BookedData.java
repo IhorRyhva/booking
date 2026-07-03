@@ -32,12 +32,12 @@ public class BookedData {
         return "start: " + startDate + ", end: " + endDate;
     }
 
-    public boolean timeCrossing (BookedData bookedData) {
-        if (this.startDate.equals(bookedData.startDate) && this.endDate.equals(bookedData.endDate)) {
-            return true;
-        }
-        return this.startDate.isBefore(bookedData.getEndDate()) && this.endDate.isAfter(bookedData.getStartDate());
-    }
+//    public boolean timeCrossing (BookedData bookedData) {
+//        if (this.startDate.equals(bookedData.startDate) && this.endDate.equals(bookedData.endDate)) {
+//            return true;
+//        }
+//        return this.startDate.isBefore(bookedData.getEndDate()) && this.endDate.isAfter(bookedData.getStartDate());
+//    }
 
     @Override
     public boolean equals(Object o) {

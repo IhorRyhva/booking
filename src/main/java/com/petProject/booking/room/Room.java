@@ -30,8 +30,8 @@ public class Room  {
 
     private int number;
 
-    @ElementCollection
-    private List<BookedData> bookedData = new ArrayList<>();
+//    @ElementCollection
+//    private List<BookedData> bookedData = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "hotel_id")

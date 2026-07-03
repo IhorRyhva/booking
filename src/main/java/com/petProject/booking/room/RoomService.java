@@ -20,24 +20,24 @@ public class RoomService {
         }
         newResponses.removeIf(room -> (room.getPrice() < min || room.getPrice() >= max));
     }
-
-    public List<Room> getRoomByData (BookedData bookedData, List<Room> rooms) {
-        List<Room> result = new ArrayList<>();
-        for (Room room: rooms) {
-            boolean canBeAdd = true;
-            for (BookedData bookedDataOfRoom: room.getBookedData()) {
-                if (bookedDataOfRoom.timeCrossing(bookedData)) {
-                    canBeAdd = false;
-                    break;
-                }
-            }
-            if (canBeAdd) {
-                result.add(room);
-            }
-        }
-
-        return result;
-    }
+//
+//    public List<Room> getRoomByData (BookedData bookedData, List<Room> rooms) {
+//        List<Room> result = new ArrayList<>();
+//        for (Room room: rooms) {
+//            boolean canBeAdd = true;
+//            for (BookedData bookedDataOfRoom: room.getBookedData()) {
+//                if (bookedDataOfRoom.timeCrossing(bookedData)) {
+//                    canBeAdd = false;
+//                    break;
+//                }
+//            }
+//            if (canBeAdd) {
+//                result.add(room);
+//            }
+//        }
+//
+//        return result;
+//    }
 
     public List<Room> getRoomsById(List<Long> rooms) {
         List<Room> result = new ArrayList<>();
