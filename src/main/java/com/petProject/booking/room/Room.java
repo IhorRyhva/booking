@@ -30,15 +30,13 @@ public class Room  {
 
     private int number;
 
-//    @ElementCollection
-//    private List<BookedData> bookedData = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "hotel_id")
     @JsonBackReference
     private Hotel hotel;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "room", cascade = CascadeType.PERSIST)
     private List<Book> books;
 
     @Override

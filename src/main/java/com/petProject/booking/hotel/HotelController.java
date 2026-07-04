@@ -15,7 +15,7 @@ public class HotelController {
 
     /**TODO* change to DeleteMapping and id to long*/
     @PostMapping("/hotel/delete")
-    public String deleteHotel(@RequestParam int id) {
+    public String deleteHotel(@RequestParam long id) {
         this.hotelService.remove(id);
         return "redirect:/admin";
     }

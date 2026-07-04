@@ -68,7 +68,8 @@ public class BookService {
         if (bookedData == null) {
             throw new IllegalArgumentException("Book data equals null");
         }
-        room.getBookedData().add(bookedData);
+        //room.getBookedData().add(bookedData);
+        /**TODO* тут створи Book і добав до Room*/
         this.roomRepository.save(room);
         return room;
     }

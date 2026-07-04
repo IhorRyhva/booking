@@ -30,38 +30,17 @@ public class HotelService {
 /**TODO**/
 // ще додай emailService
 
-    public List<Long> getRoomsByDataAndLocation (String country, String city, BookedData bookedData) {
-        List<Hotel> hotels = this.hotelMapper.getHotelByLocation(country, city, this.hotelRepository.findAll());
-
-        List<Room> rooms = getRoomList(hotels);
-        //rooms = this.roomService.getRoomByData(bookedData, rooms);
-        /*TODO*getRoomByData will be work in the db side**/
-        return this.roomMapper.getRoomId(rooms);
-    }
-
-    private List<Room> getRoomList(List<Hotel> hotels) {
-        List<Room> rooms = new ArrayList<>();
-        for (Hotel hotel: hotels) {
-            rooms.addAll(hotel.getRooms());
-        }
-        return rooms;
-    }
-
-    public ArrayList<Room> getRoomsByAnotherInput(int min, int max, Star star, RoomCategory roomCategory, ArrayList<Room> responses) throws IncorrectMaxMinPriceException {
-        ArrayList<Room> newResponses = (ArrayList<Room>) responses.clone();
-        this.hotelMapper.filterByStar(star, newResponses);
-        this.hotelMapper.filterByCategory(roomCategory, newResponses);
-        this.roomService.filterByPrice(min, max, newResponses);
-
-        return newResponses;
-    }
 
     @Transactional
-    public boolean remove(int id) {
-        if (!this.hotelRepository.existsById((long) id)) {
+    public boolean remove(long id) {
+        if (!this.hotelRepository.existsById(id)) {
             return false;
         }
-        this.hotelRepository.removeById((long) id);
-        return hotelRepository.existsById((long) id);
+        this.hotelRepository.removeById(id);
+        return hotelRepository.existsById(id);
+    }
+
+    public ArrayList<Room> getRoomsByAnotherInput(int min, int max, Star star, RoomCategory roomCategory, ArrayList<Room> newResponses) {
+        return null;
     }
 }

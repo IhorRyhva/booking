@@ -2,31 +2,33 @@ package com.petProject.booking;
 
 import com.petProject.booking.booking.Book;
 import com.petProject.booking.booking.BookRepository;
-import com.petProject.booking.booking.RoomInfo;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.hotel.HotelRepository;
 import com.petProject.booking.hotel.Location;
 import com.petProject.booking.hotel.Star;
 import com.petProject.booking.room.Room;
+import com.petProject.booking.room.RoomCategory;
 import com.petProject.booking.room.RoomRepository;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -87,6 +89,8 @@ public class DataBaseTest {
 
     @Test
     public void constantRoomInfoAfterRoomChangeTest() throws IncorrectBookTimeException {
+        User user = User.builder().build();
+        userRepository.save(user);
         Room room = Room.builder()
                 .price(50)
                 .number(4)
@@ -98,9 +102,7 @@ public class DataBaseTest {
                 .build();
         room.setHotel(hotel);
         LocalDate now = LocalDate.now();
-        User user = User.builder().build();
         Book book = new Book(user, new BookedData(now, now.plusYears(1)), room);
-        userRepository.save(user);
         hotelRepository.save(hotel);
         long roomId = roomRepository.save(room).getId();
         long bookId = bookRepository.save(book).getId();
@@ -113,5 +115,30 @@ public class DataBaseTest {
         em.clear();
         book = bookRepository.findById(bookId).get();
         assertEquals(currentPrice, book.getRoomInfo().price());
+    }
+
+    @Test
+    void crossBookDataTest() throws IncorrectBookTimeException {
+        User user = User.builder().build();
+        userRepository.save(user);
+        BookedData bookedData = new BookedData(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10));
+        Hotel hotel = Hotel.builder()
+                .location(Location.builder()
+                        .country("Ukraine")
+                        .town("Lviv")
+                        .build())
+                .nameOfHotel("LvivHotel")
+                .star(Star.FIVE)
+                .build();
+        Room room = Room.builder()
+                .hotel(hotel)
+                .category(RoomCategory.LUX)
+                .price(500)
+                .books(new ArrayList<>())
+                .build();
+        room.setBooks(List.of(new Book(user, bookedData, room)));
+        hotel.setRooms(List.of(room));
+        hotelRepository.save(hotel);
+        assertTrue(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", LocalDate.now().plusDays(1), LocalDate.now().plusDays(10)).isEmpty());
     }
 }

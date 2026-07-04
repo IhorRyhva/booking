@@ -1,6 +1,8 @@
 package com.petProject.booking.web;
 
 import com.petProject.booking.hotel.HotelService;
+import com.petProject.booking.room.Room;
+import com.petProject.booking.room.RoomService;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.user.UserService;
@@ -24,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MainController {
     private final UserService userService;
-    private final HotelService hotelService;
+    private final RoomService roomService;
 
     @GetMapping("/main")
     public String home(Model model, @AuthenticationPrincipal OidcUser user) {
@@ -48,11 +50,11 @@ public class MainController {
             @RequestParam LocalDate start, @RequestParam LocalDate end, RedirectAttributes redirectAttributes, HttpSession httpSession,
             Model model, @AuthenticationPrincipal OidcUser oidcUser
     ){
-        List<Long> rooms;
+        List<Room> rooms;
         try {
             BookedData bookedData = new BookedData(start, end);
 
-            rooms = this.hotelService.getRoomsByDataAndLocation(country, city, bookedData);
+            rooms = this.roomService.getRoomsByDataAndLocation(country, city, bookedData);
             httpSession.setAttribute("bookedData", bookedData);
             httpSession.setAttribute("start", start);
             httpSession.setAttribute("end", end);
