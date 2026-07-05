@@ -139,6 +139,16 @@ public class DataBaseTest {
         room.setBooks(List.of(new Book(user, bookedData, room)));
         hotel.setRooms(List.of(room));
         hotelRepository.save(hotel);
-        assertTrue(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", LocalDate.now().plusDays(1), LocalDate.now().plusDays(10)).isEmpty());
+        em.flush();
+        em.clear();
+
+        BookedData sameData = new BookedData(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10));
+        assertTrue(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", sameData.getStartDate(), sameData.getEndDate()).isEmpty());
+
+        BookedData differentData = new BookedData(LocalDate.now().plusDays(11), LocalDate.now().plusDays(15));
+        assertFalse(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", differentData.getStartDate(), differentData.getEndDate()).isEmpty());
+
+        BookedData crossingData = new BookedData(LocalDate.now().plusDays(10), LocalDate.now().plusDays(15));
+        assertFalse(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", crossingData.getStartDate(), crossingData.getEndDate()).isEmpty());
     }
 }
