@@ -1,8 +1,10 @@
 spring:
+  config:
+    import: optional:file:.env[properties]
   datasource:
     url: jdbc:postgresql://localhost:5432/booking?options=-c%20TimeZone=UTC
-    username: ihor
-    password: 1234
+    username: ${USERNAME}
+    password: ${PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
@@ -17,7 +19,7 @@ spring:
         registration:
           keycloak:
             client-id: book-client
-            client-secret: 1pkVRj8CJR2pexJTKIinCCi5ae564BXQ
+            client-secret: ${CLIENT_SECRET}
             scope:
               - openid
               - profile

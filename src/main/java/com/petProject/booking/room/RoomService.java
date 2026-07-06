@@ -12,9 +12,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class RoomService {
-   private final RoomRepository roomRepository;
-
-
+    private final RoomRepository roomRepository;
 
     public List<Room> getRoomsByDataAndLocation(String country, String city, BookedData bookedData) {
         return this.roomRepository.findRoomByLocationAndData(country, city, bookedData.getStartDate(), bookedData.getEndDate());

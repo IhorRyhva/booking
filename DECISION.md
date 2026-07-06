@@ -43,3 +43,6 @@ and make NoArgsConstructor protected access for Hibernate. Next Book's construct
 Why is RoomInfo a record (embeddable)?
 To guarantee immutability I would need make all fields private final and settable only through
 the constructor. And here appear reason why I choose record, it does by language definition: all fields are private final and settable only though a constructor.
+
+06.07.2026 I added CascadeType.MERGE in a Room.java for books because when our user made a book, I store this book on the room side
+and user side, and is logical when I add new book for room's list and store it, I also want to store new book

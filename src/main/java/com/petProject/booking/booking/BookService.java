@@ -9,6 +9,7 @@ import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,6 @@ public class BookService {
 
     /*TODO: sort bookings by start date*/
     /*TODO: add email to booking response*/
-    /* TODO: require authentication only for booking action*/
 
     public List<BookResponse> getBooksByUser (String email) {
         return this.userRepository
@@ -47,35 +47,36 @@ public class BookService {
     }
 
     @Transactional
-    public void registerBook(String email, BookedData bookedData, long roomId) {
+    public void registerBook(String email, @Valid BookedData bookedData, long roomId) {
         Optional<Room> roomOptional = this.roomRepository.findById(roomId);
-        if (roomOptional.isEmpty()) throw new RuntimeException(); /**TODO* Change here this logic*/
-        Room room = roomOptional.get();
         Optional<User> userOptional = this.userRepository.findByEmail(email);
-        /**TODO*null юзер означає що користувач незареєстрований і для цього треба окрему логіку придумати*/
-        Book book = new Book(userOptional.get(), bookedData, room); /**TODO*userOptional.get() тимчасове рішення*/
-        this.bookRoom(room, bookedData);
-        userOptional.get().getBooks().add(book);
-        this.bookRepository.save(book);
+        if (roomOptional.isEmpty()) {
+            throw new NotExistingRoomException();
+        }
+        if (userOptional.isEmpty()) {
+            throw new NotExistUserException();
+        }
+        User user = userOptional.get();
+        Room room = roomOptional.get();
+        Book book = new Book(user, bookedData, room);
+        this.bookRoom(room, book);
+        user.getBooks().add(book);
+        this.userRepository.save(user);
+        /**TODO* тут я в ручну не зберігаю бронювання бо вони через cascadeType.merge в room самі зберігаються*/
     }
 
 
-    private Room bookRoom(Room room,  BookedData bookedData) {
-        if (room == null) {
-            throw new IllegalArgumentException();
-        }
-
-        if (bookedData == null) {
-            throw new IllegalArgumentException("Book data equals null");
-        }
-        //room.getBookedData().add(bookedData);
-        /**TODO* тут створи Book і добав до Room*/
+    private Room bookRoom(Room room,  Book book) {
+        room.getBooks().add(book);
         this.roomRepository.save(room);
         return room;
     }
 
     public Room getRoom(long id) {
-        /**TODO* додай тут помилку */
-        return this.roomRepository.findById(id).get();
+        Optional<Room> roomOptional = this.roomRepository.findById(id);
+        if (roomOptional.isEmpty()) {
+            throw new NotExistingRoomException();
+        }
+        return roomOptional.get();
     }
 }

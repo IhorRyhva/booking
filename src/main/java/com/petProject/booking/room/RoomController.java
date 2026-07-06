@@ -37,7 +37,6 @@ public class RoomController {
         return "result";
     }
 
-
     /**TODO*
      * make as in BookController
      * */

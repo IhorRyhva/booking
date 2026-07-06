@@ -51,20 +51,11 @@ public class BookController {
         }
         BookedData bookedData = (BookedData) httpSession.getAttribute("bookedData");
         if (oidcUser != null) {
-            this.bookService.registerBook(bookDTO.getEmail(), bookedData, roomId);
+            this.bookService.registerBook(oidcUser.getEmail(), bookedData, roomId);
             return "redirect:bookedRoom";
         } else {
-            if (bookDTO.getEmail() == null || bookDTO.getEmail().isBlank()) {
-                this.addAttributeForPage(null, roomId, model, httpSession);
-                model.addAttribute("bookDTO", bookDTO);
-                return "bookRoom";
-            }
-            /**TODO*Add register book logic for unauth user*/
-            this.bookService.registerBook(bookDTO.getEmail(), bookedData, roomId);
-            /**TODO* change redirect and add email service */
-            this.bookService.registerBook(bookDTO.getEmail(), bookedData, roomId);
-            model.addAttribute("bookDTO", bookDTO);
-            return "bookRoom";
+            /**TODO*create book-logic for unauth user*/
+            return null;
         }
     }
 

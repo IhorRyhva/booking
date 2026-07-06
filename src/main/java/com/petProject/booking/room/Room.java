@@ -36,7 +36,7 @@ public class Room  {
     @JsonBackReference
     private Hotel hotel;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "room", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Book> books;
 
     @Override

@@ -28,7 +28,7 @@ public class User {
 
     private boolean isBanned = false;
 
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "user")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE}, mappedBy = "user")
     @ToString.Exclude
     @OrderBy("bookedData.startDate DESC")
     private List<Book> books = new ArrayList<>();
