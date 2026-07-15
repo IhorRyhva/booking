@@ -5,6 +5,5 @@ public enum RoomCategory {
     FAMILY,
     ECONOMY,
     BASIC,
-    DELUXE,
-    ANY
+    DELUXE
 }

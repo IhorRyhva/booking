@@ -23,6 +23,7 @@ public class Hotel {
 
     private String nameOfHotel;
 
+    @Enumerated(value = EnumType.STRING)
     private Star star;
 
     @Embedded

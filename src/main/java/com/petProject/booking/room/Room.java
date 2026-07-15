@@ -26,6 +26,7 @@ public class Room  {
 
     private int price;
 
+    @Enumerated(value = EnumType.STRING)
     private RoomCategory category;
 
     private int number;

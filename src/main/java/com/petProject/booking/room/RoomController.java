@@ -28,8 +28,6 @@ public class RoomController {
     @GetMapping("/result")
     public String result (Model model, @RequestParam List<Room> rooms, HttpSession session, @AuthenticationPrincipal OidcUser oidcUser) {
         model.addAttribute("error", false);
-        model.addAttribute("star", Star.ANY);
-        model.addAttribute("roomCategory", RoomCategory.ANY);
         model.addAttribute("maxPrice", 1000);
         model.addAttribute("minPrice", 0);
         session.setAttribute("rooms", rooms);

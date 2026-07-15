@@ -11,3 +11,6 @@
 26.06.2026  registerBook: double call in guest branch → duplicate bookings
 registerBook: userOptional.get() throws on unauthenticated user
 guest-booking flow not implemented (separate block, after JPA)
+HotelService  public ArrayList<Room> getRoomsByAnotherInput(int min, int max, Star star, RoomCategory roomCategory, ArrayList<Room> newResponses) {
+return null;
+} create this method on db side

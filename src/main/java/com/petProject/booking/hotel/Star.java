@@ -5,6 +5,5 @@ public enum Star {
     TWO,
     THREE,
     FOUR,
-    FIVE,
-    ANY
+    FIVE
 }
