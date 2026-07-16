@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.petProject.booking.room.Room;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public class Hotel {
     private String nameOfHotel;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(length = 10, nullable = false)
+    @NotNull
     private Star star;
 
     @Embedded

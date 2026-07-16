@@ -6,6 +6,7 @@ import com.petProject.booking.booking.Book;
 import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.room.dto.BookedData;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class Room  {
     private int price;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(length = 10, nullable = false)
+    @NotNull
     private RoomCategory category;
 
     private int number;
