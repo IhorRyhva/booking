@@ -46,3 +46,14 @@ the constructor. And here appear reason why I choose record, it does by language
 
 06.07.2026 I added CascadeType.MERGE in a Room.java for books because when our user made a book, I store this book on the room side
 and user side, and is logical when I add new book for room's list and store it, I also want to store new book
+
+16.07.2026 Why did I remove RoomCategory.ANY and Star.ANY? 
+I decided to remove these enum values because a hotel can't have "any" stars and room can't have "any" category,
+because "any" is value for searching, not for specified star or room category
+Why did I add "hotel_star_check" and "room_category_check"?
+The reason was to prevent that somebody would add to database an invalid value for these enum's.
+This decision also has a downside, if developer decide to add new star or category value he also must 
+add this change to new migration sql file, but if he forgets to do it, my tests will remind it for him
+I decided to migrate my enums value in db from ordinal to varchar, because
+Imagine a situation some developer put new enum value in the middle of class what does it mean? It means that old value 1 now is connected to another enum value, but with varchar it doesn't matter
+where developer put new enum value.
