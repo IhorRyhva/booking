@@ -11,6 +11,7 @@ import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomCategory;
 import com.petProject.booking.room.RoomRepository;
 import com.petProject.booking.room.dto.BookedData;
+import com.petProject.booking.specification.RoomSpecification;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.data.jpa.domain.Specification;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -63,6 +65,13 @@ public class DataBaseTest {
 
     @Test
     void repositoryReturnsSavedHotelTest() {
+        roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByCategory(RoomCategory.BASIC),
+                RoomSpecification.filterByCountry("Ukraine"),
+                RoomSpecification.filterByPrice(20, 2000),
+                RoomSpecification.filterByStar(null),
+                RoomSpecification.filterByTown("Lviv")
+        ));
         Hotel hotel = Hotel.builder()
                 .star(Star.FIVE)
                 .nameOfHotel("Lala")
@@ -94,11 +103,13 @@ public class DataBaseTest {
         Room room = Room.builder()
                 .price(50)
                 .number(4)
+                .category(RoomCategory.BASIC)
                 .build();
         int currentPrice = room.getPrice();
         Hotel hotel = Hotel.builder()
                 .nameOfHotel("Test")
                 .rooms(List.of(room))
+                .star(Star.FOUR)
                 .build();
         room.setHotel(hotel);
         LocalDate now = LocalDate.now();
