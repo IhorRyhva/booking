@@ -1,11 +1,14 @@
 package com.petProject.booking.specification;
 
+import com.petProject.booking.booking.Book;
 import com.petProject.booking.hotel.Star;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomCategory;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.time.LocalDate;
 
 public class RoomSpecification {
 
@@ -59,6 +62,23 @@ public class RoomSpecification {
                 return criteriaBuilder.conjunction();
             }
             return criteriaBuilder.equal(root.get("category"), category);
+        };
+    }
+
+    public static Specification<Room> filterByDate(LocalDate start, LocalDate end) {
+        return (root, query, criteriaBuilder) -> {
+            if (start == null || end == null) {
+                return criteriaBuilder.conjunction();
+            }
+            Subquery<Book> subquery = query.subquery(Book.class);
+            Root<Book> bookRoot = subquery.from(Book.class);
+            subquery.select(bookRoot)
+                    .where(criteriaBuilder
+                            .and(criteriaBuilder.equal(bookRoot.get("room"), root),
+                                 criteriaBuilder.lessThan(bookRoot.get("bookedData").get("startDate"), end),
+                                 criteriaBuilder.greaterThan(bookRoot.get("bookedData").get("endDate"), start))
+                            );
+            return criteriaBuilder.not(criteriaBuilder.exists(subquery));
         };
     }
 }

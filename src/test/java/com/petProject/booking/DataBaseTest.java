@@ -16,8 +16,6 @@ import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -65,13 +63,6 @@ public class DataBaseTest {
 
     @Test
     void repositoryReturnsSavedHotelTest() {
-        roomRepository.findAll(Specification.allOf(
-                RoomSpecification.filterByCategory(RoomCategory.BASIC),
-                RoomSpecification.filterByCountry("Ukraine"),
-                RoomSpecification.filterByPrice(20, 2000),
-                RoomSpecification.filterByStar(null),
-                RoomSpecification.filterByTown("Lviv")
-        ));
         Hotel hotel = Hotel.builder()
                 .star(Star.FIVE)
                 .nameOfHotel("Lala")
@@ -161,5 +152,220 @@ public class DataBaseTest {
 
         BookedData crossingData = new BookedData(LocalDate.now().plusDays(10), LocalDate.now().plusDays(15));
         assertFalse(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", crossingData.getStartDate(), crossingData.getEndDate()).isEmpty());
+    }
+
+    @Test
+    void correctSpecificationPriceFilterWorkTest() {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FOUR)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room = Room.builder()
+                .hotel(hotel)
+                .category(RoomCategory.BASIC)
+                .price(10)
+                .build();
+        Room room1 = Room.builder()
+                .hotel(hotel)
+                .category(RoomCategory.BASIC)
+                .price(5)
+                .build();
+        Room room2 = Room.builder()
+                .hotel(hotel)
+                .price(200)
+                .category(RoomCategory.BASIC)
+                .build();
+        Room room3 = Room.builder()
+                .hotel(hotel)
+                .price(100)
+                .category(RoomCategory.BASIC)
+                .build();
+        hotel.getRooms().addAll(List.of(room, room1, room2, room3));
+        hotelRepository.save(hotel);
+        em.flush();
+        List<Room> rooms = this.roomRepository.findAll(
+                Specification.allOf(
+                        RoomSpecification.filterByPrice(10, null)
+                )
+        );
+        assertTrue(rooms.containsAll(List.of(room, room2, room3)) && rooms.size() == 3);
+        rooms = this.roomRepository.findAll(
+                Specification.allOf(
+                        RoomSpecification.filterByPrice(null, 10)
+                )
+        );
+        assertTrue(rooms.containsAll(List.of(room, room1)) && rooms.size() == 2);
+        rooms = this.roomRepository.findAll(
+                Specification.allOf(
+                        RoomSpecification.filterByPrice(null, null)
+                )
+        );
+        assertTrue(rooms.containsAll(List.of(room, room1, room2, room3)));
+        rooms = this.roomRepository.findAll(
+                Specification.allOf(
+                        RoomSpecification.filterByPrice(5, 100)
+                )
+        );
+        assertTrue(rooms.containsAll(List.of(room, room1, room3)) && rooms.size() == 3);
+    }
+
+    @Test
+    void checkFilterByStarWork() {
+        Hotel hotel4 = Hotel.builder()
+                .star(Star.FOUR)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room4 = Room.builder()
+                .hotel(hotel4)
+                .category(RoomCategory.BASIC)
+                .price(10)
+                .build();
+        Hotel hotel5 = Hotel.builder()
+                .star(Star.FIVE)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room5 = Room.builder()
+                .hotel(hotel5)
+                .category(RoomCategory.BASIC)
+                .price(10)
+                .build();
+        hotel4.getRooms().add(room4);
+        hotel5.getRooms().add(room5);
+        this.hotelRepository.saveAll(List.of(hotel4, hotel5));
+        List<Room> rooms = roomRepository.findAll(
+                RoomSpecification.filterByStar(null)
+        );
+        assertTrue(rooms.containsAll(List.of(room4, room5)) && rooms.size() == 2);
+        rooms = roomRepository.findAll(
+                RoomSpecification.filterByStar(Star.FIVE)
+        );
+        rooms.forEach(System.out::println);
+        assertTrue(rooms.contains(room5) && rooms.size() == 1);
+    }
+
+    @Test
+    void correctFilterByCountryAndTownTest() {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FOUR)
+                .rooms(new ArrayList<>())
+                .location(Location.builder()
+                        .country("Ukraine")
+                        .town("Lviv")
+                        .build())
+                .build();
+        Room room = Room.builder()
+                .hotel(hotel)
+                .category(RoomCategory.BASIC)
+                .price(10)
+                .build();
+        hotel.getRooms().add(room);
+        Hotel hotel2 = Hotel.builder()
+                .star(Star.FOUR)
+                .rooms(new ArrayList<>())
+                .location(Location.builder()
+                        .country("Czechia")
+                        .town("Praha")
+                        .build())
+                .build();
+        Room room2 = Room.builder()
+                .hotel(hotel2)
+                .category(RoomCategory.BASIC)
+                .price(10)
+                .build();
+        hotel.getRooms().add(room);
+        hotel2.getRooms().add(room2);
+        hotelRepository.saveAll(List.of(hotel, hotel2));
+        em.flush();
+        List<Room> rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByCountry("Ukraine"),
+                RoomSpecification.filterByTown("Kyiv")
+        ));
+        assertTrue(rooms.isEmpty());
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByCountry("Slovakia"),
+                RoomSpecification.filterByTown("Bratislava")
+        ));
+        assertTrue(rooms.isEmpty());
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByCountry("Ukraine"),
+                RoomSpecification.filterByTown("Lviv")
+        ));
+        assertTrue(rooms.contains(room) && rooms.size() == 1);
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByCountry(null),
+                RoomSpecification.filterByTown(null)
+        ));
+        assertTrue(rooms.containsAll(List.of(room, room2)) && rooms.size() == 2);
+    }
+
+    @Test
+    void correctFilterByCategory() {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FOUR)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room = Room.builder()
+                .hotel(hotel)
+                .category(RoomCategory.BASIC)
+                .price(10)
+                .build();
+        hotel.getRooms().add(room);
+        hotelRepository.save(hotel);
+        em.flush();
+        List<Room> rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByCategory(RoomCategory.BASIC)
+        ));
+        assertTrue(rooms.contains(room) && rooms.size() == 1);
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByCategory(RoomCategory.LUX)
+        ));
+        assertTrue(rooms.isEmpty());
+    }
+
+    @Test
+    void correctFilterByDateWork() throws IncorrectBookTimeException {
+        User user = User.builder().build();
+        userRepository.save(user);
+        em.flush();
+        Hotel hotel = Hotel.builder()
+                .star(Star.FOUR)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room = Room.builder()
+                .hotel(hotel)
+                .category(RoomCategory.BASIC)
+                .price(10)
+                .books(new ArrayList<>())
+                .build();
+        hotel.getRooms().add(room);
+        hotelRepository.save(hotel);
+        BookedData bookedData = new BookedData(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10));
+        Book book = new Book(user, bookedData, room);
+        room.getBooks().add(book);
+        roomRepository.save(room);
+        List<Room> rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByDate(LocalDate.now(), LocalDate.now().plusDays(5))
+        ));
+        assertTrue(rooms.isEmpty());
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByDate(LocalDate.now(), LocalDate.now().plusDays(11))
+        ));
+        assertTrue(rooms.isEmpty());
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByDate(LocalDate.now().plusDays(5), LocalDate.now().plusDays(11))
+        ));
+        assertTrue(rooms.isEmpty());
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByDate(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10))
+        ));
+        assertTrue(rooms.isEmpty());
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByDate(LocalDate.now().plusDays(10), LocalDate.now().plusDays(12))
+        ));
+        assertTrue(rooms.contains(room) && rooms.size() == 1);
+        rooms = roomRepository.findAll(Specification.allOf(
+                RoomSpecification.filterByDate(LocalDate.now(), LocalDate.now().plusDays(1))
+        ));
+        assertTrue(rooms.contains(room) && rooms.size() == 1);
     }
 }
