@@ -11,13 +11,8 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class HotelService {
     private final HotelRepository hotelRepository;
-
-
-
 /**TODO**/
 // ще додай emailService
-
-
     @Transactional
     public boolean remove(long id) {
         if (!this.hotelRepository.existsById(id)) {
@@ -25,9 +20,5 @@ public class HotelService {
         }
         this.hotelRepository.removeById(id);
         return hotelRepository.existsById(id);
-    }
-
-    public ArrayList<Room> getRoomsByAnotherInput(int min, int max, Star star, RoomCategory roomCategory, ArrayList<Room> newResponses) {
-        return null;
     }
 }

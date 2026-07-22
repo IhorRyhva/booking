@@ -57,3 +57,19 @@ add this change to new migration sql file, but if he forgets to do it, my tests 
 I decided to migrate my enums value in db from ordinal to varchar, because
 Imagine a situation some developer put new enum value in the middle of class what does it mean? It means that old value 1 now is connected to another enum value, but with varchar it doesn't matter
 where developer put new enum value.
+
+22.07.2026 Why "room_id" is first here and is order here important CREATE INDEX idx_room_id_date ON book (room_id, start_date, end_date);
+Here I will give an answer on both question, order is important because Bi-tree save rows as ordered list by column.
+When room_id "Equality" is in first place leafs is ordered by room_id and inside narrowed by data.
+If first argument is range "data", leaf will be firstly ordered by data and then by room_id, what make looking for available rooms harder.
+
+22.07.2026 Why I have strict "<" and ">" here: criteriaBuilder.lessThan(bookRoot.get("bookedData").get("startDate"), end),
+                                               criteriaBuilder.greaterThan(bookRoot.get("bookedData").get("endDate"), start)
+The reason is that person can check in at the same date where another has check out in the same room
+
+22.07.2026 Why is Specification better than JPQL in my case?
+Specification is more flexibility than JPQL, and because I have 8 filter values and some of them is optional so flexibility in my case is important and Specification match here great.
+When JPQL with new argument become more and more harder to maintain and understand
+
+22.07.2026 criteriaBuilder.conjunction() vs null
+.conjunction() is used for avoiding NPE and if you didn't give an argument sql give 1=1, what means that this filter isn't used

@@ -27,7 +27,7 @@ public class BookService {
     private final RoomMapper roomMapper;
     private final BookRepository bookRepository;
 
-    /*TODO: sort bookings by start date*/
+
     /*TODO: add email to booking response*/
 
     public List<BookResponse> getBooksByUser (String email) {

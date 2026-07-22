@@ -1,10 +1,8 @@
 package com.petProject.booking.room;
 
 import com.petProject.booking.hotel.HotelService;
-import com.petProject.booking.hotel.Star;
-import com.petProject.booking.room.dto.RoomResponse;
 import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
-import com.petProject.booking.room.dto.SortDTO;
+import com.petProject.booking.room.dto.FilterData;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,39 +25,36 @@ public class RoomController {
     private final HotelService hotelService;
 
     @GetMapping("/result")
-    public String result (Model model, @RequestParam List<Room> rooms, HttpSession session, @AuthenticationPrincipal OidcUser oidcUser) {
+    public String result (Model model, @RequestParam String city, @RequestParam String country, @RequestParam LocalDate start,
+                          @RequestParam LocalDate end, @RequestParam List<Room> rooms, @AuthenticationPrincipal OidcUser oidcUser) {
         model.addAttribute("error", false);
         model.addAttribute("maxPrice", 1000);
         model.addAttribute("minPrice", 0);
-        session.setAttribute("rooms", rooms);
         model.addAttribute("authorizeUser", oidcUser != null);
+        model.addAttribute("room", rooms);
+        model.addAttribute("country", country);
+        model.addAttribute("city", city);
+        model.addAttribute("start", start);
+        model.addAttribute("end", end);
         return "result";
     }
 
-    /**TODO*
-     * make as in BookController
-     * */
     @PostMapping("/result")
-    public String postResult (Model model, HttpSession session, @ModelAttribute SortDTO sortDTO) {
-        ArrayList<Room> newResponses = new ArrayList<>();
-        newResponses.addAll((ArrayList<Room>) session.getAttribute("rooms"));
-        model.addAttribute("star", sortDTO.star());
-        model.addAttribute("roomCategory", sortDTO.roomCategory());
-        //try {
-            model.addAttribute("error", false);
-            /**TODO* створи getRoomsByAnotherInput нормальний!!!!*/
-            newResponses = this.hotelService.getRoomsByAnotherInput(sortDTO.min(), sortDTO.max(), sortDTO.star(), sortDTO.roomCategory(), newResponses);
-            model.addAttribute("maxPrice", sortDTO.max());
-            model.addAttribute("minPrice", sortDTO.min());
-//        } catch (IncorrectMaxMinPriceException e) {
-//            ArrayList<Room> responses = (ArrayList<Room>) session.getAttribute("rooms");
-//            model.addAttribute("rooms", responses);
-//            model.addAttribute("error", true);
-//            model.addAttribute("maxPrice", 1000);
-//            model.addAttribute("minPrice", 0);
-//        }
-        model.addAttribute("rooms", newResponses);
-
+    public String postResult (Model model, @ModelAttribute FilterData filterData) throws IncorrectMaxMinPriceException {
+        if (filterData.min() > filterData.max()) {
+            throw new IncorrectMaxMinPriceException("You enter incorrect values");
+        }
+        List<Room> rooms = this.roomService.getRooms(filterData);
+        model.addAttribute("star", filterData.star());
+        model.addAttribute("roomCategory", filterData.roomCategory());
+        model.addAttribute("error", false);
+        model.addAttribute("maxPrice", filterData.max());
+        model.addAttribute("minPrice", filterData.min());
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("country", filterData.country());
+        model.addAttribute("city", filterData.city());
+        model.addAttribute("start", filterData.bookedData().getStartDate());
+        model.addAttribute("end", filterData.bookedData().getEndDate());
         return "result";
     }
 

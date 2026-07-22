@@ -120,41 +120,6 @@ public class DataBaseTest {
     }
 
     @Test
-    void crossBookDataTest() throws IncorrectBookTimeException {
-        User user = User.builder().build();
-        userRepository.save(user);
-        BookedData bookedData = new BookedData(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10));
-        Hotel hotel = Hotel.builder()
-                .location(Location.builder()
-                        .country("Ukraine")
-                        .town("Lviv")
-                        .build())
-                .nameOfHotel("LvivHotel")
-                .star(Star.FIVE)
-                .build();
-        Room room = Room.builder()
-                .hotel(hotel)
-                .category(RoomCategory.LUX)
-                .price(500)
-                .books(new ArrayList<>())
-                .build();
-        room.setBooks(List.of(new Book(user, bookedData, room)));
-        hotel.setRooms(List.of(room));
-        hotelRepository.save(hotel);
-        em.flush();
-        em.clear();
-
-        BookedData sameData = new BookedData(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10));
-        assertTrue(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", sameData.getStartDate(), sameData.getEndDate()).isEmpty());
-
-        BookedData differentData = new BookedData(LocalDate.now().plusDays(11), LocalDate.now().plusDays(15));
-        assertFalse(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", differentData.getStartDate(), differentData.getEndDate()).isEmpty());
-
-        BookedData crossingData = new BookedData(LocalDate.now().plusDays(10), LocalDate.now().plusDays(15));
-        assertFalse(this.roomRepository.findRoomByLocationAndData("Ukraine", "Lviv", crossingData.getStartDate(), crossingData.getEndDate()).isEmpty());
-    }
-
-    @Test
     void correctSpecificationPriceFilterWorkTest() {
         Hotel hotel = Hotel.builder()
                 .star(Star.FOUR)
@@ -200,7 +165,7 @@ public class DataBaseTest {
                         RoomSpecification.filterByPrice(null, null)
                 )
         );
-        assertTrue(rooms.containsAll(List.of(room, room1, room2, room3)));
+        assertTrue(rooms.containsAll(List.of(room, room1, room2, room3)) && rooms.size() == 4);
         rooms = this.roomRepository.findAll(
                 Specification.allOf(
                         RoomSpecification.filterByPrice(5, 100)
@@ -239,7 +204,6 @@ public class DataBaseTest {
         rooms = roomRepository.findAll(
                 RoomSpecification.filterByStar(Star.FIVE)
         );
-        rooms.forEach(System.out::println);
         assertTrue(rooms.contains(room5) && rooms.size() == 1);
     }
 
@@ -258,7 +222,6 @@ public class DataBaseTest {
                 .category(RoomCategory.BASIC)
                 .price(10)
                 .build();
-        hotel.getRooms().add(room);
         Hotel hotel2 = Hotel.builder()
                 .star(Star.FOUR)
                 .rooms(new ArrayList<>())

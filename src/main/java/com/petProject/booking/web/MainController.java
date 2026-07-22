@@ -1,17 +1,16 @@
 package com.petProject.booking.web;
 
-import com.petProject.booking.hotel.HotelService;
+import com.petProject.booking.room.dto.FilterData;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomService;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
+import com.petProject.booking.tool.ExtractDataFromBooking;
 import com.petProject.booking.user.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,8 +52,11 @@ public class MainController {
         List<Room> rooms;
         try {
             BookedData bookedData = new BookedData(start, end);
-
-            rooms = this.roomService.getRoomsByDataAndLocation(country, city, bookedData);
+            rooms = this.roomService.getRooms(FilterData.builder()
+                    .city(city)
+                    .country(country)
+                    .bookedData(new BookedData(start, end))
+                    .build());
             httpSession.setAttribute("bookedData", bookedData);
             httpSession.setAttribute("start", start);
             httpSession.setAttribute("end", end);
@@ -66,6 +68,10 @@ public class MainController {
             return "bookMain";
         }
         redirectAttributes.addAttribute("rooms", rooms);
+        redirectAttributes.addAttribute("start", start);
+        redirectAttributes.addAttribute("end", end);
+        redirectAttributes.addAttribute("country", country);
+        redirectAttributes.addAttribute("city", city);
         return "redirect:/result";
     }
 }
