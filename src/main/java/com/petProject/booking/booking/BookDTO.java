@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class BookDTO {
@@ -14,7 +16,9 @@ public class BookDTO {
         private String userName;
         @NotBlank
         private String nameOfHotel;
-        int number;
+        private int number;
+        private LocalDate start;
+        private LocalDate end;
 
         public BookDTO() {
         }

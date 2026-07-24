@@ -173,29 +173,29 @@
     <div class="filters">
         <h2>Filters</h2>
 
-        <form method="POST" action="/result">
+        <form method="POST" th:action="@{/result}">
 
             <div class="filter-group">
                 <label>Stars</label>
                 <select name="star">
-                    <option value="ANY" th:selected="${star.name() == 'ANY'}">Any</option>
-                    <option value="ONE" th:selected="${star.name() == 'ONE'}">1 🌟</option>
-                    <option value="TWO" th:selected="${star.name() == 'TWO'}">2 🌟</option>
-                    <option value="THREE" th:selected="${star.name() == 'THREE'}">3 🌟</option>
-                    <option value="FOUR" th:selected="${star.name() == 'FOUR'}">4 🌟</option>
-                    <option value="FIVE" th:selected="${star.name() == 'FIVE'}">5 🌟</option>
+                    <option value=""  th:selected="${star == null}">Any</option>
+                    <option value="ONE" th:selected="${star?.name() == 'ONE'}">1 🌟</option>
+                    <option value="TWO" th:selected="${star?.name() == 'TWO'}">2 🌟</option>
+                    <option value="THREE" th:selected="${star?.name() == 'THREE'}">3 🌟</option>
+                    <option value="FOUR" th:selected="${star?.name() == 'FOUR'}">4 🌟</option>
+                    <option value="FIVE" th:selected="${star?.name() == 'FIVE'}">5 🌟</option>
                 </select>
             </div>
 
             <div class="filter-group">
                 <label>Room category</label>
                 <select name="roomCategory">
-                    <option value="ANY" th:selected="${roomCategory.name() == 'ANY' || roomCategory.name() == ''}">Any</option>
-                    <option value="LUX" th:selected="${roomCategory.name() == 'LUX'}">Luxury</option>
-                    <option value="DELUXE" th:selected="${roomCategory.name() == 'DELUXE'}">Deluxe</option>
-                    <option value="FAMILY" th:selected="${roomCategory.name() == 'FAMILY'}">Family</option>
-                    <option value="BASIC" th:selected="${roomCategory.name() == 'BASIC'}">Basic</option>
-                    <option value="ECONOMY" th:selected="${roomCategory.name() == 'ECONOMY'}">Economy</option>
+                    <option value="" th:selected="${roomCategory == null}">Any</option>
+                    <option value="LUX" th:selected="${roomCategory?.name() == 'LUX'}">Luxury</option>
+                    <option value="DELUXE" th:selected="${roomCategory?.name() == 'DELUXE'}">Deluxe</option>
+                    <option value="FAMILY" th:selected="${roomCategory?.name() == 'FAMILY'}">Family</option>
+                    <option value="BASIC" th:selected="${roomCategory?.name() == 'BASIC'}">Basic</option>
+                    <option value="ECONOMY" th:selected="${roomCategory?.name() == 'ECONOMY'}">Economy</option>
                 </select>
             </div>
 
@@ -248,10 +248,12 @@
 
             <div class="card-right">
                 <div class="price">
-                    <span th:text="${room.price()}"></span> $
+                    <span th:text="${room.getPrice()}"></span> $
                 </div>
                 <form method="get" th:action="@{/bookRoom}">
                     <input type="hidden" name="roomId" th:value="${room.getId()}">
+                    <input type="hidden" name="start" th:value="${start}">
+                    <input type="hidden" name="end" th:value="${end}">
                     <button type="submit" class="book-btn">Book now</button>
                 </form>
             </div>

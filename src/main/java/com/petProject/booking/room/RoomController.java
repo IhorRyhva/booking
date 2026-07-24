@@ -1,9 +1,9 @@
 package com.petProject.booking.room;
 
-import com.petProject.booking.hotel.HotelService;
+import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
+import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.room.dto.FilterData;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -15,23 +15,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class RoomController {
     private final RoomService roomService;
-    private final HotelService hotelService;
 
     @GetMapping("/result")
     public String result (Model model, @RequestParam String city, @RequestParam String country, @RequestParam LocalDate start,
-                          @RequestParam LocalDate end, @RequestParam List<Room> rooms, @AuthenticationPrincipal OidcUser oidcUser) {
+                          @RequestParam LocalDate end, @AuthenticationPrincipal OidcUser oidcUser) {
         model.addAttribute("error", false);
         model.addAttribute("maxPrice", 1000);
         model.addAttribute("minPrice", 0);
         model.addAttribute("authorizeUser", oidcUser != null);
-        model.addAttribute("room", rooms);
+        model.addAttribute("rooms", this.roomService.getRooms(FilterData.builder()
+                        .max(1000)
+                        .min(0)
+                        .start(start)
+                        .end(end)
+                        .city(city)
+                        .country(country)
+                .build()));
         model.addAttribute("country", country);
         model.addAttribute("city", city);
         model.addAttribute("start", start);
@@ -40,11 +45,12 @@ public class RoomController {
     }
 
     @PostMapping("/result")
-    public String postResult (Model model, @ModelAttribute FilterData filterData) throws IncorrectMaxMinPriceException {
+    public String postResult (Model model, @ModelAttribute FilterData filterData, @AuthenticationPrincipal OidcUser oidcUser) throws IncorrectMaxMinPriceException {
         if (filterData.min() > filterData.max()) {
             throw new IncorrectMaxMinPriceException("You enter incorrect values");
         }
         List<Room> rooms = this.roomService.getRooms(filterData);
+        model.addAttribute("authorizeUser", oidcUser != null);
         model.addAttribute("star", filterData.star());
         model.addAttribute("roomCategory", filterData.roomCategory());
         model.addAttribute("error", false);
@@ -53,8 +59,8 @@ public class RoomController {
         model.addAttribute("rooms", rooms);
         model.addAttribute("country", filterData.country());
         model.addAttribute("city", filterData.city());
-        model.addAttribute("start", filterData.bookedData().getStartDate());
-        model.addAttribute("end", filterData.bookedData().getEndDate());
+        model.addAttribute("start", filterData.star());
+        model.addAttribute("end", filterData.end());
         return "result";
     }
 

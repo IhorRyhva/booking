@@ -15,7 +15,7 @@ public class RoomService {
 
     public List<Room> getRooms(FilterData filterData) {
         return roomRepository.findAll(Specification.allOf(
-                RoomSpecification.filterByDate(filterData.bookedData().getStartDate(), filterData.bookedData().getEndDate()),
+                RoomSpecification.filterByDate(filterData.start(), filterData.end()),
                 RoomSpecification.filterByCategory(filterData.roomCategory()),
                 RoomSpecification.filterByTown(filterData.city()),
                 RoomSpecification.filterByCountry(filterData.country()),

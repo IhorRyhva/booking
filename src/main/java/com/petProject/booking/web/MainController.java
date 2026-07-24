@@ -46,20 +46,16 @@ public class MainController {
     @PostMapping("/main")
     public String searchAccommodation (
             @RequestParam String country, @RequestParam String city,
-            @RequestParam LocalDate start, @RequestParam LocalDate end, RedirectAttributes redirectAttributes, HttpSession httpSession,
+            @RequestParam LocalDate start, @RequestParam LocalDate end, RedirectAttributes redirectAttributes,
             Model model, @AuthenticationPrincipal OidcUser oidcUser
     ){
-        List<Room> rooms;
         try {
             BookedData bookedData = new BookedData(start, end);
-            rooms = this.roomService.getRooms(FilterData.builder()
-                    .city(city)
-                    .country(country)
-                    .bookedData(new BookedData(start, end))
-                    .build());
-            httpSession.setAttribute("bookedData", bookedData);
-            httpSession.setAttribute("start", start);
-            httpSession.setAttribute("end", end);
+            redirectAttributes.addAttribute("start", bookedData.getStartDate());
+            redirectAttributes.addAttribute("end", bookedData.getEndDate());
+            redirectAttributes.addAttribute("country", country);
+            redirectAttributes.addAttribute("city", city);
+            return "redirect:/result";
         } catch (IncorrectBookTimeException e) {
             model.addAttribute("country", country);
             model.addAttribute("city", city);
@@ -67,11 +63,5 @@ public class MainController {
             model.addAttribute("authorizeUser", oidcUser != null);
             return "bookMain";
         }
-        redirectAttributes.addAttribute("rooms", rooms);
-        redirectAttributes.addAttribute("start", start);
-        redirectAttributes.addAttribute("end", end);
-        redirectAttributes.addAttribute("country", country);
-        redirectAttributes.addAttribute("city", city);
-        return "redirect:/result";
     }
 }

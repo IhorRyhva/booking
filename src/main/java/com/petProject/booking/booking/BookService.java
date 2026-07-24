@@ -25,7 +25,6 @@ public class BookService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
-    private final BookRepository bookRepository;
 
 
     /*TODO: add email to booking response*/
@@ -62,7 +61,6 @@ public class BookService {
         this.bookRoom(room, book);
         user.getBooks().add(book);
         this.userRepository.save(user);
-        /**TODO* тут я в ручну не зберігаю бронювання бо вони через cascadeType.merge в room самі зберігаються*/
     }
 
 

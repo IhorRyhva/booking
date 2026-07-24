@@ -1,10 +1,9 @@
 package com.petProject.booking.booking;
 
+import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.room.*;
 import com.petProject.booking.room.dto.BookedData;
-import com.petProject.booking.user.UserService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,11 +22,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
-    private final UserService userService;
 
     @GetMapping("/bookRoom")
-    public String formForBook (@AuthenticationPrincipal OidcUser user, @RequestParam long roomId, Model model, HttpSession httpSession) {
-        this.addAttributeForPage(user, roomId, model, httpSession);
+    public String formForBook (@AuthenticationPrincipal OidcUser user, @RequestParam long roomId,
+                               Model model, @RequestParam LocalDate start, @RequestParam LocalDate end) {
+        this.addAttributeForPage(user, roomId, model, start, end);
         return "bookRoom";
     }
 
@@ -40,16 +39,16 @@ public class BookController {
     }
 
     @PostMapping("/bookRoom")
-    public String addNewBook (@ModelAttribute("bookDTO") @Valid BookDTO bookDTO, @RequestParam long roomId,
-                              BindingResult bindingResult, HttpSession httpSession,
+    public String addNewBook (@ModelAttribute @Valid BookDTO bookDTO, @RequestParam long roomId,
+                              BindingResult bindingResult,
                               @AuthenticationPrincipal OidcUser oidcUser, Model model
-                              ) {
+                              ) throws IncorrectBookTimeException {
         if (bindingResult.hasErrors()) {
-            this.addAttributeForPage(oidcUser, roomId, model, httpSession);
+            this.addAttributeForPage(oidcUser, roomId, model, bookDTO.getStart(), bookDTO.getEnd());
             model.addAttribute("bookDTO", bookDTO);
             return "bookRoom";
         }
-        BookedData bookedData = (BookedData) httpSession.getAttribute("bookedData");
+        BookedData bookedData = new BookedData(bookDTO.getStart(), bookDTO.getEnd());
         if (oidcUser != null) {
             this.bookService.registerBook(oidcUser.getEmail(), bookedData, roomId);
             return "redirect:bookedRoom";
@@ -59,9 +58,9 @@ public class BookController {
         }
     }
 
-    private void addAttributeForPage(OidcUser user, long id, Model model, HttpSession httpSession) {
-        String start = this.bookService.getFormattedDate((LocalDate) httpSession.getAttribute("start"));
-        String end = this.bookService.getFormattedDate((LocalDate) httpSession.getAttribute("end"));
+    private void addAttributeForPage(OidcUser user, long id, Model model, LocalDate startDate, LocalDate endDate) {
+        String start = this.bookService.getFormattedDate(startDate);
+        String end = this.bookService.getFormattedDate(endDate);
         model.addAttribute("start", start);
         model.addAttribute("end", end);
         model.addAttribute("roomId", id);
