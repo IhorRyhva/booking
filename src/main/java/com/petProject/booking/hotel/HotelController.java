@@ -26,7 +26,6 @@ public class HotelController {
         return "redirect:main";
     }
 
-    /**TODO*ADD admin.html*/
     @GetMapping()
     public String admin() {
         return "admin";

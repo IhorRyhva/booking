@@ -95,13 +95,14 @@
 <div class="container">
 
   <div class="badge" th:if="${authorized}">Signed in</div>
-  <div class="badge" th:if="${!authorized}">Guest booking</div>
 
   <div class="section info">
     <h2>Room</h2>
 
     <p><b>Hotel:</b> <span th:text="${nameOfHotel}"></span></p>
-    <p><b>Location:</b> <span th:text="${country}"></span>, <span th:text="${town}"></span></p>
+    <p><b>Location:</b> <span th:text="${country}"></span>
+      <span th:text="${town}"></span>
+    </p>
     <p><b>Stars:</b> <span th:text="${star}"></span></p>
     <p><b>Room:</b> <span th:text="${number}"></span></p>
     <p><b>Category:</b> <span th:text="${category}"></span></p>
@@ -112,36 +113,20 @@
   <div class="section">
     <h2>Booking</h2>
 
-    <form th:action="@{/bookRoom}" th:object="${bookDTO}" method="post" >
+    <form th:action="@{/bookRoom}" method="post" >
       <label>Check in</label>
-      <input type="text" th:value="${start}" readonly>
+      <input type="text" th:value="${startString}" readonly>
 
       <label>Check out</label>
-      <input type="text" th:value="${end}" readonly>
+      <input type="text" th:value="${endString}" readonly>
 
       <!--AUTH USER-->
       <div th:if="${authorized}">
         <label>Name</label>
-        <input type="text" th:field="*{userName}" readonly/>
+        <input type="text" name="userName" th:value="${userName}" readonly/>
 
         <label>Email</label>
-        <input type="email" th:field="*{email}" readonly/>
-      </div>
-
-      <!--GUEST-->
-      <div th:if="${!authorized}">
-        <span th:if="${bookDTO != null}">
-          <label>Name</label>
-          <input type="text" th:field="*{userName}"/>
-          <label>Email</label>
-          <input type="email" th:field="*{email}"/>
-        </span>
-        <span th:if="${bookDTO == null}">
-          <label>Name</label>
-          <input type="text" name="userName"/>
-          <label>Email</label>
-          <input type="email" name="email"/>
-        </span>
+        <input type="email" name="email" th:value="${email}" readonly/>
       </div>
 
       <input type="hidden" name="nameOfHotel" th:value="${nameOfHotel}">
@@ -151,7 +136,9 @@
       <input type="hidden" name="number" th:value="${number}">
       <input type="hidden" name="category" th:value="${category}">
       <input type="hidden" name="price" th:value="${price}">
-      <input >
+      <input type="hidden" name="start" th:value="${start}">
+      <input type="hidden" name="end" th:value="${end}">
+      <input type="hidden" name="roomId" th:value="${roomId}">
 
       <button type="submit">Confirm booking</button>
 

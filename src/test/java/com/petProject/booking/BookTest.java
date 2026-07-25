@@ -2,33 +2,27 @@ package com.petProject.booking;
 
 import com.petProject.booking.booking.BookService;
 import com.petProject.booking.hotel.Hotel;
-import com.petProject.booking.hotel.HotelRepository;
 import com.petProject.booking.hotel.Location;
-import com.petProject.booking.hotel.Star;
 import com.petProject.booking.room.Room;
-import com.petProject.booking.room.RoomCategory;
 import com.petProject.booking.room.RoomRepository;
-import com.petProject.booking.specification.RoomSpecification;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
+import java.time.LocalDate;
 import java.util.TimeZone;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -61,28 +55,10 @@ public class BookTest {
     }
 
     @Test
-    public void cannotBeNullEmail() throws Exception {
-        mockMvc.perform(post("/bookRoom").with(csrf())
-                .param("userName", "Pepe")
-                .param("nameOfHotel", "Hotel")
-                .param("number", "5")
+    public void notAuthRedirectTest() throws Exception {
+        mockMvc.perform(post("/bookRoom")
+                .with(csrf())
                 .param("roomId", "5")
-        ).andExpect(status().isOk())
-                .andExpect(view().name("bookRoom"));
-        verify(bookService, never()).registerBook(anyString(), any(), anyInt());
+        ).andExpect(redirectedUrl("/login"));
     }
-
-    @Test
-    public void cannotBeEmptyEmail() throws Exception {
-        mockMvc.perform(post("/bookRoom").with(csrf())
-                .param("userName", "Pepe")
-                .param("nameOfHotel", "Hotel")
-                .param("number", "5")
-                .param("email", "")
-                .param("roomId", "5")
-        ).andExpect(status().isOk())
-                .andExpect(view().name("bookRoom"));
-        verify(bookService, never()).registerBook(anyString(), any(), anyInt());
-    }
-
 }

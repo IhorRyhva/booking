@@ -33,13 +33,13 @@ public class SecurityConfig {
         http
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
-                        .defaultSuccessUrl("/main", true)
+                        .defaultSuccessUrl("/main", false)
                         .userInfoEndpoint(userInfoEndpointConfig ->
                                 userInfoEndpointConfig.oidcUserService(this.bookOidcUserService))
                 ).authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasAuthority("admin")
-                        .requestMatchers("/bookedRoom").authenticated()
-                        .requestMatchers("/bookRoom", "/main", "/login", "/result").permitAll()
+                        .requestMatchers("/bookedRoom", "/bookRoom").authenticated()
+                        .requestMatchers("/main", "/login", "/result").permitAll()
                         .anyRequest().authenticated())
                 .logout(l -> l.logoutSuccessHandler(handler));
         return http.build();

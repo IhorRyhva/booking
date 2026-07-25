@@ -39,34 +39,30 @@ public class BookController {
     }
 
     @PostMapping("/bookRoom")
-    public String addNewBook (@ModelAttribute @Valid BookDTO bookDTO, @RequestParam long roomId,
+    public String addNewBook (@ModelAttribute @Valid BookDTO bookDTO,
                               BindingResult bindingResult,
                               @AuthenticationPrincipal OidcUser oidcUser, Model model
                               ) throws IncorrectBookTimeException {
         if (bindingResult.hasErrors()) {
-            this.addAttributeForPage(oidcUser, roomId, model, bookDTO.getStart(), bookDTO.getEnd());
-            model.addAttribute("bookDTO", bookDTO);
+            this.addAttributeForPage(oidcUser, bookDTO.getRoomId(), model, bookDTO.getStart(), bookDTO.getEnd());
             return "bookRoom";
         }
         BookedData bookedData = new BookedData(bookDTO.getStart(), bookDTO.getEnd());
-        if (oidcUser != null) {
-            this.bookService.registerBook(oidcUser.getEmail(), bookedData, roomId);
-            return "redirect:bookedRoom";
-        } else {
-            /**TODO*create book-logic for unauth user*/
-            return null;
-        }
+        this.bookService.registerBook(oidcUser.getEmail(), bookedData, bookDTO.getRoomId());
+        return "redirect:bookedRoom";
     }
 
     private void addAttributeForPage(OidcUser user, long id, Model model, LocalDate startDate, LocalDate endDate) {
         String start = this.bookService.getFormattedDate(startDate);
         String end = this.bookService.getFormattedDate(endDate);
-        model.addAttribute("start", start);
-        model.addAttribute("end", end);
+        model.addAttribute("startString", start);
+        model.addAttribute("endString", end);
+        model.addAttribute("start", startDate);
+        model.addAttribute("end", endDate);
         model.addAttribute("roomId", id);
         Room room = this.bookService.getRoom(id);
         Hotel hotel = room.getHotel();
-        model.addAttribute("country", hotel.getLocation().town());
+        model.addAttribute("country", hotel.getLocation().country());
         model.addAttribute("town", hotel.getLocation().town());
         model.addAttribute("nameOfHotel", hotel.getNameOfHotel());
         model.addAttribute("star", hotel.getStar());
@@ -74,12 +70,11 @@ public class BookController {
         model.addAttribute("category", room.getCategory());
         model.addAttribute("price", room.getPrice());
 
-        if(user != null) {
-            model.addAttribute("authorized", true);
-            model.addAttribute("bookDTO", new BookDTO(user.getEmail(), user.getFullName()));
-        } else {
-            model.addAttribute("authorized", false);
-        }
+        model.addAttribute("authorized", true);
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("fullName", user.getFullName());
+        model.addAttribute("userName", user.getFullName());
+
     }
     
 

@@ -19,6 +19,7 @@ public class BookDTO {
         private int number;
         private LocalDate start;
         private LocalDate end;
+        private long roomId;
 
         public BookDTO() {
         }

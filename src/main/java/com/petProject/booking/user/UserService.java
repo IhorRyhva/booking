@@ -27,23 +27,6 @@ public class UserService {
         return this.repository.findByEmail(email);
     }
 
-    public User getUser(String email, String userName) {
-        Optional<User> optionalUser = this.repository.findByEmail(email);
-        User user = optionalUser.orElseGet(() -> User.builder()
-                .email(email)
-                .userName(userName)
-                .books(new ArrayList<>())
-                .build());
-        return user;
-    }
-
-    public User createUser(String email, String userName) {
-        return this.repository.save(User.builder()
-                        .userName(userName)
-                        .email(email)
-                .build());
-    }
-
     public void ban(String email) {
         Optional<User> userOptional = this.getUser(email);
         userOptional.ifPresent(user -> {

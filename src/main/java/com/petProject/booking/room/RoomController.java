@@ -1,8 +1,6 @@
 package com.petProject.booking.room;
 
-import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
-import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.room.dto.FilterData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -59,7 +57,7 @@ public class RoomController {
         model.addAttribute("rooms", rooms);
         model.addAttribute("country", filterData.country());
         model.addAttribute("city", filterData.city());
-        model.addAttribute("start", filterData.star());
+        model.addAttribute("start", filterData.start());
         model.addAttribute("end", filterData.end());
         return "result";
     }
