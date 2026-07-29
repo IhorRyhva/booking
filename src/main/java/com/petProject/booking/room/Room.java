@@ -35,6 +35,7 @@ public class Room  {
 
     private int number;
 
+    private boolean removed;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "hotel_id")

@@ -1,0 +1,1 @@
+ALTER TABLE room ADD COLUMN removed boolean not null default false;

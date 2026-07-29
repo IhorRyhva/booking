@@ -3,20 +3,19 @@ package com.petProject.booking.hotel;
 import com.petProject.booking.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class HotelController {
-    private final HotelService hotelService;
+    private final AdminService adminService;
     private final UserService userService;
 
     /**TODO* change to DeleteMapping and id to long*/
     @PostMapping("/hotel/delete")
     public String deleteHotel(@RequestParam long id) {
-        this.hotelService.remove(id);
+        this.adminService.removeHotel(id);
         return "redirect:/admin";
     }
 

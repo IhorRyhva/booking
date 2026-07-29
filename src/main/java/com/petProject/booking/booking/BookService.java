@@ -57,6 +57,9 @@ public class BookService {
         }
         User user = userOptional.get();
         Room room = roomOptional.get();
+        if (room.isRemoved()) {
+            throw new ForbiddenBookException();
+        }
         Book book = new Book(user, bookedData, room);
         this.bookRoom(room, book);
         user.getBooks().add(book);
@@ -64,10 +67,9 @@ public class BookService {
     }
 
 
-    private Room bookRoom(Room room,  Book book) {
+    private void bookRoom(Room room,  Book book) {
         room.getBooks().add(book);
         this.roomRepository.save(room);
-        return room;
     }
 
     public Room getRoom(long id) {

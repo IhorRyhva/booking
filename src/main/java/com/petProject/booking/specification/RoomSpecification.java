@@ -81,4 +81,10 @@ public class RoomSpecification {
             return criteriaBuilder.not(criteriaBuilder.exists(subquery));
         };
     }
+
+    public static Specification<Room> getNotRemovedRoom() {
+        return (root, query, criteriaBuilder) -> {
+          return criteriaBuilder.equal(root.get("removed"), false);
+        };
+    }
 }

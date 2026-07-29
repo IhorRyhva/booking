@@ -15,12 +15,13 @@ public class RoomService {
 
     public List<Room> getRooms(FilterData filterData) {
         return roomRepository.findAll(Specification.allOf(
-                RoomSpecification.filterByDate(filterData.start(), filterData.end()),
-                RoomSpecification.filterByCategory(filterData.roomCategory()),
-                RoomSpecification.filterByTown(filterData.city()),
                 RoomSpecification.filterByCountry(filterData.country()),
+                RoomSpecification.filterByTown(filterData.city()),
+                RoomSpecification.filterByCategory(filterData.roomCategory()),
+                RoomSpecification.filterByStar(filterData.star()),
+                RoomSpecification.getNotRemovedRoom(),
                 RoomSpecification.filterByPrice(filterData.min(), filterData.max()),
-                RoomSpecification.filterByStar(filterData.star())
+                RoomSpecification.filterByDate(filterData.start(), filterData.end())
         ));
     }
 }

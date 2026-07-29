@@ -2,11 +2,11 @@ package com.petProject.booking;
 
 import com.petProject.booking.booking.Book;
 import com.petProject.booking.booking.BookRepository;
+import com.petProject.booking.booking.BookService;
+import com.petProject.booking.booking.ForbiddenBookException;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
-import com.petProject.booking.hotel.Hotel;
-import com.petProject.booking.hotel.HotelRepository;
-import com.petProject.booking.hotel.Location;
-import com.petProject.booking.hotel.Star;
+import com.petProject.booking.common.exception.RoomNotExistException;
+import com.petProject.booking.hotel.*;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomCategory;
 import com.petProject.booking.room.RoomRepository;
@@ -16,11 +16,13 @@ import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.domain.Specification;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -30,13 +32,17 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(AdminService.class)
 public class DataBaseTest {
 
     static {
@@ -59,7 +65,95 @@ public class DataBaseTest {
     UserRepository userRepository;
 
     @Autowired
+    AdminService adminService;
+
+    @Autowired
     EntityManager em;
+
+    @Test
+    void roomNotExistMustThrowExceptionTest() {
+        //Here room db haven't any room
+        assertThrows(RoomNotExistException.class, () -> adminService.removeRoom(5));
+    }
+
+    @Test
+    void mustReturnTrueWithoutBooksTest() {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FIVE)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room = Room.builder()
+                .category(RoomCategory.BASIC)
+                .books(new ArrayList<>())
+                .hotel(hotel)
+                .price(500)
+                .number(4)
+                .build();
+        hotel.getRooms().add(room);
+        hotel = hotelRepository.save(hotel);
+        em.flush();
+        em.clear();
+        room = hotel.getRooms().getFirst();
+        roomRepository.save(room);
+        em.flush();
+        assertTrue(adminService.removeRoom(room.getId()));
+    }
+
+    @Test
+    void bookStartIsFiveDaysAfterTodayMustBeForbiddenRemoveRoomTest() throws IncorrectBookTimeException {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FIVE)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room = Room.builder()
+                .category(RoomCategory.BASIC)
+                .books(new ArrayList<>())
+                .hotel(hotel)
+                .price(500)
+                .number(4)
+                .build();
+        User user = User.builder().build();
+        hotel.getRooms().add(room);
+        hotel = hotelRepository.save(hotel);
+        user = userRepository.save(user);
+        em.flush();
+        em.clear();
+        room = hotel.getRooms().getFirst();
+        Book book = new Book(user, new BookedData(LocalDate.now().plusDays(5), LocalDate.now().plusDays(10)), room);
+        room.getBooks().add(book);
+        roomRepository.save(room);
+        bookRepository.save(book);
+        em.flush();
+        assertFalse(adminService.removeRoom(room.getId()));
+    }
+
+    @Test
+    void bookStartIsTodayMustBeForbiddenRemoveRoomTest() throws IncorrectBookTimeException {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FIVE)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room = Room.builder()
+                .category(RoomCategory.BASIC)
+                .books(new ArrayList<>())
+                .hotel(hotel)
+                .price(500)
+                .number(4)
+                .build();
+        User user = User.builder().build();
+        hotel.getRooms().add(room);
+        hotel = hotelRepository.save(hotel);
+        user = userRepository.save(user);
+        em.flush();
+        em.clear();
+        room = hotel.getRooms().getFirst();
+        Book book = new Book(user, new BookedData(LocalDate.now(), LocalDate.now().plusDays(5)), room);
+        room.getBooks().add(book);
+        roomRepository.save(room);
+        bookRepository.save(book);
+        em.flush();
+        assertFalse(adminService.removeRoom(room.getId()));
+    }
 
     @Test
     void repositoryReturnsSavedHotelTest() {
@@ -288,7 +382,7 @@ public class DataBaseTest {
     @Test
     void correctFilterByDateWork() throws IncorrectBookTimeException {
         User user = User.builder().build();
-        userRepository.save(user);
+        user = userRepository.save(user);
         em.flush();
         Hotel hotel = Hotel.builder()
                 .star(Star.FOUR)
@@ -301,11 +395,14 @@ public class DataBaseTest {
                 .books(new ArrayList<>())
                 .build();
         hotel.getRooms().add(room);
-        hotelRepository.save(hotel);
+        hotel = hotelRepository.save(hotel);
+        room = hotel.getRooms().getFirst();
         BookedData bookedData = new BookedData(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10));
         Book book = new Book(user, bookedData, room);
         room.getBooks().add(book);
         roomRepository.save(room);
+        bookRepository.save(book);
+        em.flush();
         List<Room> rooms = roomRepository.findAll(Specification.allOf(
                 RoomSpecification.filterByDate(LocalDate.now(), LocalDate.now().plusDays(5))
         ));
