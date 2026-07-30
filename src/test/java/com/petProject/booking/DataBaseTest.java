@@ -2,21 +2,20 @@ package com.petProject.booking;
 
 import com.petProject.booking.booking.Book;
 import com.petProject.booking.booking.BookRepository;
-import com.petProject.booking.booking.BookService;
-import com.petProject.booking.booking.ForbiddenBookException;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.common.exception.RoomNotExistException;
 import com.petProject.booking.hotel.*;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomCategory;
 import com.petProject.booking.room.RoomRepository;
+import com.petProject.booking.room.RoomService;
 import com.petProject.booking.room.dto.BookedData;
+import com.petProject.booking.room.dto.FilterData;
 import com.petProject.booking.specification.RoomSpecification;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -32,17 +31,16 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+
 
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(AdminService.class)
+@Import({AdminService.class, RoomService.class})
 public class DataBaseTest {
 
     static {
@@ -68,12 +66,97 @@ public class DataBaseTest {
     AdminService adminService;
 
     @Autowired
+    RoomService roomService;
+
+    @Autowired
     EntityManager em;
 
     @Test
     void roomNotExistMustThrowExceptionTest() {
         //Here room db haven't any room
         assertThrows(RoomNotExistException.class, () -> adminService.removeRoom(5));
+    }
+
+    @Test
+    void roomWithLastStartedBookBeforeTodayCanBeRemoved() throws IncorrectBookTimeException {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FIVE)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room = Room.builder()
+                .category(RoomCategory.BASIC)
+                .books(new ArrayList<>())
+                .hotel(hotel)
+                .price(500)
+                .number(4)
+                .build();
+        hotel.getRooms().add(room);
+        User user = User.builder().build();
+        user = userRepository.save(user);
+        hotel = hotelRepository.save(hotel);
+        Book book = new Book(user, new BookedData(LocalDate.now(), LocalDate.now().plusDays(5)), hotel.getRooms().getFirst());
+        book = bookRepository.save(book);
+        em.flush();
+        em.createNativeQuery(""" 
+            UPDATE book
+            SET start_date = ?, end_date = ?
+            WHERE id = ?
+            """)
+                .setParameter(1, LocalDate.now().minusDays(5))
+                .setParameter(2, LocalDate.now().plusDays(5))
+                .setParameter(3, book.getId())
+                .executeUpdate();
+        room.getBooks().add(book);
+        em.flush();
+        em.clear();
+        assertTrue(adminService.removeRoom(room.getId()));
+    }
+
+    @Test
+    void removedRoomIsMarkedAsRemovedTest() {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FIVE)
+                .rooms(new ArrayList<>())
+                .build();
+        Room room = Room.builder()
+                .category(RoomCategory.BASIC)
+                .books(new ArrayList<>())
+                .hotel(hotel)
+                .price(500)
+                .number(4)
+                .build();
+        hotel.getRooms().add(room);
+        long id = hotelRepository.save(hotel).getRooms().getFirst().getId();
+        em.flush();
+        em.clear();
+        Room first = roomRepository.findById(id).get();
+        adminService.removeRoom(first.getId());
+        em.flush();
+        em.clear();
+        assertTrue(roomRepository.findById(id).get().isRemoved());
+    }
+
+    @Test
+    void mustBeOnlyNotRemovedRooms() {
+        Hotel hotel = Hotel.builder()
+                .star(Star.FIVE)
+                .rooms(new ArrayList<>())
+                .build();
+        Room deleted = Room.builder()
+                .removed(true)
+                .category(RoomCategory.BASIC)
+                .hotel(hotel)
+                .build();
+        Room normal = Room.builder()
+                .category(RoomCategory.BASIC)
+                .hotel(hotel)
+                .build();
+        hotel.getRooms().addAll(List.of(deleted, normal));
+        hotelRepository.save(hotel);
+        em.flush();
+        em.clear();
+        List<Room> rooms = roomService.getRooms(FilterData.builder().build());
+        assertTrue(rooms.contains(normal) && rooms.size() == 1);
     }
 
     @Test

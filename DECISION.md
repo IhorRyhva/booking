@@ -73,3 +73,17 @@ When JPQL with new argument become more and more harder to maintain and understa
 
 22.07.2026 criteriaBuilder.conjunction() vs null
 .conjunction() is used for avoiding NPE and if you didn't give an argument sql give 1=1, what means that this filter isn't used
+
+30.07.2026
+Admin can delete only these hotels which don't contain rooms which have not started book. I made this decision because if user even didn't start his holiday then admin can't remove this
+room and must connect with this user, but if admin decide delete room in which guest is, he can do it, because administration in hotel report to user why he must leave room or this room can become
+unavailable after his holiday
+
+Soft delete is better than SET-NULL in my case because soft delete permit store real FK and you still can see this room but can't book, with set null you can't even this room
+and it makes user book history worse + it is easier return removed room with soft delete
+
+CascadeType.REMOVE and orphanRemoval have this different: in CascadeType.Remove if your parent entity was removed all his daughter entity would be removed with him, 
+but orphanRemoval in additional will remove daughter entity if she can't parent entity. I didn't use either in my Room--Book connection because Book shouldn't be depended on Room
+
+In the test roomWithLastStartedBookBeforeTodayCanBeRemoved I must use  em.createNativeQuery for changing BookData.start to previous days, because BookDate forbids make a book
+with days before now, but for my test I must have book which start some days before today to test my AdminSpecification allow remove room with lasted start book before today

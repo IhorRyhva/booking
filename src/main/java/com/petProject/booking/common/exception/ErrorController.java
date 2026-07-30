@@ -12,23 +12,43 @@ public class ErrorController {
 
     /**TODO*add message*/
 
-//    @ExceptionHandler(IncorrectMaxMinPriceException.class)
-//    public ResponseEntity<ErrorMessage> price(IncorrectMaxMinPriceException ex) {
-//        ErrorMessage errorMessage = ErrorMessage.builder()
-//                .localDateTime(LocalDateTime.now())
-//                .message(ex.getMessage())
-//                .code(HttpStatus.BAD_REQUEST.toString())
-//                .build();
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-//    }
-//
-//    @ExceptionHandler(IncorrectBookTimeException.class)
-//    public ResponseEntity<ErrorMessage> price(IncorrectBookTimeException ex) {
-//        ErrorMessage errorMessage = ErrorMessage.builder()
-//                .localDateTime(LocalDateTime.now())
-//                .message(ex.getMessage())
-//                .code(HttpStatus.BAD_REQUEST.toString())
-//                .build();
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-//    }
+    @ExceptionHandler(IncorrectMaxMinPriceException.class)
+    public ResponseEntity<ErrorMessage> price(IncorrectMaxMinPriceException ex) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .localDateTime(LocalDateTime.now())
+                .message(ex.getMessage())
+                .code(HttpStatus.BAD_REQUEST.toString())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler(IncorrectBookTimeException.class)
+    public ResponseEntity<ErrorMessage> book(IncorrectBookTimeException ex) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .localDateTime(LocalDateTime.now())
+                .message(ex.getMessage())
+                .code(HttpStatus.BAD_REQUEST.toString())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler(HotelNotExistException.class)
+    public ResponseEntity<ErrorMessage> notExistHotel (HotelNotExistException ex) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .localDateTime(LocalDateTime.now())
+                .message(ex.getMessage())
+                .code(HttpStatus.BAD_REQUEST.toString())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler (RoomNotExistException.class)
+    public ResponseEntity<ErrorMessage> notExistRoom (RoomNotExistException ex) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .localDateTime(LocalDateTime.now())
+                .message(ex.getMessage())
+                .code(HttpStatus.BAD_REQUEST.toString())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
 }

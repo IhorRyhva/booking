@@ -27,33 +27,32 @@ public class AdminService {
             throw new HotelNotExistException();
         }
         Hotel hotel = hotelOptional.get();
-        if (this.notExistBookedRooms(LocalDate.now(), hotel)) {
+        if (!this.existBookedRooms(LocalDate.now(), hotel)) {
             this.hotelRepository.removeById(id);
             return true;
         }
         return false;
     }
 
-    private boolean notExistBookedRooms(LocalDate now, Hotel hotel) {
-        List<Room> rooms = roomRepository.findAll(Specification.allOf(
+    private boolean existBookedRooms(LocalDate now, Hotel hotel) {
+        return roomRepository.exists(Specification.allOf(
                 AdminSpecification.getRooms(hotel.getId()),
                 AdminSpecification.existBookedRoom(now)
         ));
-        return rooms.isEmpty();
     }
 
     @Transactional
     public boolean removeRoom(long id) {
-        List<Room> rooms = roomRepository.findAll(Specification.allOf(
-                AdminSpecification.getRoom(id),
-                AdminSpecification.existBookedRoom(LocalDate.now())
-        ));
-        if (!rooms.isEmpty()) {
-            return false;
-        }
         Optional<Room> roomOptional = roomRepository.findById(id);
         if (roomOptional.isEmpty()) {
             throw new RoomNotExistException();
+        }
+        boolean exist = roomRepository.exists(Specification.allOf(
+                AdminSpecification.getRoom(id),
+                AdminSpecification.existBookedRoom(LocalDate.now())
+        ));
+        if (exist) {
+            return false;
         }
         Room room = roomOptional.get();
         room.setRemoved(true);
