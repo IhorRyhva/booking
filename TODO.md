@@ -13,3 +13,5 @@ guest-booking flow not implemented (separate block, after JPA)
 HotelService  public ArrayList<Room> getRoomsByAnotherInput(int min, int max, Star star, RoomCategory roomCategory, ArrayList<Room> newResponses) {
 return null;
 } create this method on db side~~
+make for Hotel soft remove
+add normal admin page

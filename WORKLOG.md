@@ -13,3 +13,5 @@ and verified correct works of these tests by breaking enforcement and they went 
 06.07.2026 Change bookDTO.getEmail() to oidcUser.getEmail() in order to oidcUser is trusted source of information, because
 it was checked by KeyCloack.
 All secrets were migrated to .env
+
+30.07.2026 I added two new migration, set up soft delete logic for Room and Hotel, create admin specification and cover it with tests

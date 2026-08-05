@@ -31,7 +31,7 @@ CREATE TABLE public.hotel (
                               id bigint NOT NULL,
                               country character varying(255),
                               name_of_hotel character varying(255),
-                              town character varying(255),
+                              city character varying(255),
                               CONSTRAINT hotel_star_check CHECK (((star >= 0) AND (star <= 5)))
 );
 

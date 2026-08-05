@@ -63,7 +63,7 @@ public class BookController {
         Room room = this.bookService.getRoom(id);
         Hotel hotel = room.getHotel();
         model.addAttribute("country", hotel.getLocation().country());
-        model.addAttribute("town", hotel.getLocation().town());
+        model.addAttribute("town", hotel.getLocation().city());
         model.addAttribute("nameOfHotel", hotel.getNameOfHotel());
         model.addAttribute("star", hotel.getStar());
         model.addAttribute("number", room.getNumber());

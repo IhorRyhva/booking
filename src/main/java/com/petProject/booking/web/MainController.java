@@ -1,13 +1,10 @@
 package com.petProject.booking.web;
 
-import com.petProject.booking.room.dto.FilterData;
-import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomService;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.tool.ExtractDataFromBooking;
 import com.petProject.booking.user.UserService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -19,16 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
     private final UserService userService;
-    private final RoomService roomService;
+    private final ExtractDataFromBooking extractDataFromBooking;
 
     @GetMapping("/main")
     public String home(Model model, @AuthenticationPrincipal OidcUser user) {
+//        extractDataFromBooking.extractData();
         model.addAttribute("exception", false);
         extractUserInfo(model, user);
         return "bookMain";
@@ -37,10 +34,10 @@ public class MainController {
     private void extractUserInfo(Model model, OidcUser user) {
         if (user != null) {
             model.addAttribute("authorizeUser", true);
-            this.userService.addUser(user);
         } else {
             model.addAttribute("authorizeUser", false);
         }
+        this.userService.addUser(user);
     }
 
     @PostMapping("/main")

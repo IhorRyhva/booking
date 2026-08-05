@@ -11,7 +11,7 @@ import java.util.Objects;
 @JsonAutoDetect
 public record Location(
         String country,
-        String town
+        String city
 ) {
     @Override
     public boolean equals(Object o) {
@@ -20,7 +20,7 @@ public record Location(
         if (country != null && !country.equalsIgnoreCase(location.country)) {
             return false;
         }
-        if (town != null && !town.equalsIgnoreCase(location.town)) {
+        if (city != null && !city.equalsIgnoreCase(location.city)) {
             return false;
         }
         return true;
@@ -28,6 +28,6 @@ public record Location(
 
     @Override
     public int hashCode() {
-        return Objects.hash(country, town);
+        return Objects.hash(country, city);
     }
 }

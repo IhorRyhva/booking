@@ -244,7 +244,7 @@ public class DataBaseTest {
                 .star(Star.FIVE)
                 .nameOfHotel("Lala")
                 .location(Location.builder()
-                        .town("Town")
+                        .city("Town")
                         .country("Country")
                         .build())
                 .build();
@@ -391,7 +391,7 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .location(Location.builder()
                         .country("Ukraine")
-                        .town("Lviv")
+                        .city("Lviv")
                         .build())
                 .build();
         Room room = Room.builder()
@@ -404,7 +404,7 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .location(Location.builder()
                         .country("Czechia")
-                        .town("Praha")
+                        .city("Praha")
                         .build())
                 .build();
         Room room2 = Room.builder()

@@ -36,6 +36,8 @@ public class Hotel {
     @JsonManagedReference
     private List<Room> rooms;
 
+    private boolean removed;
+
     @Override
     public String toString() {
         return "Hotel{" +

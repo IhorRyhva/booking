@@ -28,12 +28,19 @@ public class Room  {
 
     private int price;
 
+    private int bedNumber;
+
     @Enumerated(value = EnumType.STRING)
     @Column(length = 10, nullable = false)
     @NotNull
     private RoomCategory category;
 
-    private int number;
+    @Column(nullable = false)
+    private Integer number;
+
+    @NotNull
+    @Column(length = 500, nullable = false)
+    private String description;
 
     private boolean removed;
 

@@ -1,0 +1,1 @@
+alter table hotel add removed boolean not null default false;

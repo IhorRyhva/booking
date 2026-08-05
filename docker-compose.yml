@@ -9,7 +9,8 @@ services:
     ports:
       - "8090:8080"
   db:
-    image: postgres:18.4
+    image: pgvector/pgvector:0.8.6-pg18-trixie
+    container_name: pgvector
     restart: unless-stopped
     environment:
       POSTGRES_USER: ihor
@@ -18,6 +19,6 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql
+      - db_data:/var/lib/postgresql/data
 volumes:
   db_data:

@@ -1,13 +1,5 @@
 05.06.2026/remove excessive dependency 'Jackson 2'/ because SB4 give me 'Jackson 3' from starter and two version make a conflict
 
-06.06.2026 Guest bookings are tied to a transaction, not to an email.
-Context - guests are allowed to book without creating an account.
-Decision - the booking is stored without being linked to a User;
-the email is contact information only, not an identity.
-Why - if someone later registers with the same email, they will not gain access to someone else’s guest bookings;
-identity must not be based on a mutable contact detail.
-
-
 18.06.2026 Why I don't catch JwtException? The reason is that I decided to use fail-closed principial, and if my server gets incorrect JWT that
 authorization for this user must be interrupted
 18.06.2026 Why extractRole is package-private? The reason is I want test methods extractRole(String token), though public methods loadUser(OidcUserRequest userRequest),
@@ -44,8 +36,7 @@ Why is RoomInfo a record (embeddable)?
 To guarantee immutability I would need make all fields private final and settable only through
 the constructor. And here appear reason why I choose record, it does by language definition: all fields are private final and settable only though a constructor.
 
-06.07.2026 I added CascadeType.MERGE in a Room.java for books because when our user made a book, I store this book on the room side
-and user side, and is logical when I add new book for room's list and store it, I also want to store new book
+06.07.2026 Room.book hasn't any CascadeType because only user is owner of book, so only he can influence on book
 
 16.07.2026 Why did I remove RoomCategory.ANY and Star.ANY? 
 I decided to remove these enum values because a hotel can't have "any" stars and room can't have "any" category,
@@ -79,7 +70,7 @@ Admin can delete only these hotels which don't contain rooms which have not star
 room and must connect with this user, but if admin decide delete room in which guest is, he can do it, because administration in hotel report to user why he must leave room or this room can become
 unavailable after his holiday
 
-Soft delete is better than SET-NULL in my case because soft delete permit store real FK and you still can see this room but can't book, with set null you can't even this room
+Soft delete is better than SET-NULL in my case because soft delete permit store real FK and you still can see this room but can't book, with set null you can't even see this room
 and it makes user book history worse + it is easier return removed room with soft delete
 
 CascadeType.REMOVE and orphanRemoval have this different: in CascadeType.Remove if your parent entity was removed all his daughter entity would be removed with him, 

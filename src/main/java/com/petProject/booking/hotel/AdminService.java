@@ -28,7 +28,10 @@ public class AdminService {
         }
         Hotel hotel = hotelOptional.get();
         if (!this.existBookedRooms(LocalDate.now(), hotel)) {
-            this.hotelRepository.removeById(id);
+            hotel.setRemoved(true);
+            for (Room room: hotel.getRooms()) {
+                room.setRemoved(true);
+            }
             return true;
         }
         return false;

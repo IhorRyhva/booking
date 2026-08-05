@@ -35,7 +35,7 @@ public class RoomSpecification {
             if (town == null) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("hotel").get("location").get("town"), town);
+            return criteriaBuilder.equal(root.get("hotel").get("location").get("city"), town);
         };
     }
 
