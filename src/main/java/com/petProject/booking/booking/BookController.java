@@ -4,6 +4,7 @@ import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.hotel.Hotel;
 import com.petProject.booking.room.*;
 import com.petProject.booking.room.dto.BookedData;
+import com.petProject.booking.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
+    private final UserService userService;
 
     @GetMapping("/bookRoom")
     public String formForBook (@AuthenticationPrincipal OidcUser user, @RequestParam long roomId,
@@ -47,6 +49,7 @@ public class BookController {
             this.addAttributeForPage(oidcUser, bookDTO.getRoomId(), model, bookDTO.getStart(), bookDTO.getEnd());
             return "bookRoom";
         }
+        this.userService.addUser(oidcUser);
         BookedData bookedData = new BookedData(bookDTO.getStart(), bookDTO.getEnd());
         this.bookService.registerBook(oidcUser.getEmail(), bookedData, bookDTO.getRoomId());
         return "redirect:bookedRoom";

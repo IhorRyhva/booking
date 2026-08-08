@@ -15,3 +15,4 @@ it was checked by KeyCloack.
 All secrets were migrated to .env
 
 30.07.2026 I added two new migration, set up soft delete logic for Room and Hotel, create admin specification and cover it with tests
+05.08.2026 I added two new migration, hotels and rooms are now soft deleted, also I added batch for quicker data inserts.

@@ -14,10 +14,4 @@ import java.util.List;
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
-    boolean existsById(Long id);
-
-    @Modifying
-    @Transactional
-    @Query(nativeQuery = true, value = "INSERT INTO hotel (star, country, name_of_hotel, city, removed) VALUES (:values)")
-    public void saveAllHotels(@Param("values") List<Hotel> hotels);
 }

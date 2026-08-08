@@ -48,7 +48,7 @@ public class DataBaseTest {
     }
     @Container
     @ServiceConnection
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:18.4");
+    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("pgvector/pgvector:0.8.6-pg18-trixie");
 
     @Autowired
     HotelRepository hotelRepository;
@@ -84,11 +84,13 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room = Room.builder()
+                .description("")
                 .category(RoomCategory.BASIC)
                 .books(new ArrayList<>())
                 .hotel(hotel)
                 .price(500)
                 .number(4)
+                .description("")
                 .build();
         hotel.getRooms().add(room);
         User user = User.builder().build();
@@ -119,6 +121,7 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room = Room.builder()
+                .description("")
                 .category(RoomCategory.BASIC)
                 .books(new ArrayList<>())
                 .hotel(hotel)
@@ -143,11 +146,15 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room deleted = Room.builder()
+                .number(4)
+                .description("")
                 .removed(true)
                 .category(RoomCategory.BASIC)
                 .hotel(hotel)
                 .build();
         Room normal = Room.builder()
+                .number(4)
+                .description("")
                 .category(RoomCategory.BASIC)
                 .hotel(hotel)
                 .build();
@@ -166,6 +173,7 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room = Room.builder()
+                .description("")
                 .category(RoomCategory.BASIC)
                 .books(new ArrayList<>())
                 .hotel(hotel)
@@ -189,6 +197,7 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room = Room.builder()
+                .description("")
                 .category(RoomCategory.BASIC)
                 .books(new ArrayList<>())
                 .hotel(hotel)
@@ -217,6 +226,8 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room = Room.builder()
+                .number(5)
+                .description("")
                 .category(RoomCategory.BASIC)
                 .books(new ArrayList<>())
                 .hotel(hotel)
@@ -269,6 +280,7 @@ public class DataBaseTest {
         User user = User.builder().build();
         userRepository.save(user);
         Room room = Room.builder()
+                .description("")
                 .price(50)
                 .number(4)
                 .category(RoomCategory.BASIC)
@@ -303,23 +315,31 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room = Room.builder()
+                .description("")
                 .hotel(hotel)
                 .category(RoomCategory.BASIC)
                 .price(10)
+                .number(4)
                 .build();
         Room room1 = Room.builder()
+                .description("")
                 .hotel(hotel)
                 .category(RoomCategory.BASIC)
                 .price(5)
+                .number(4)
                 .build();
         Room room2 = Room.builder()
+                .description("")
                 .hotel(hotel)
                 .price(200)
+                .number(4)
                 .category(RoomCategory.BASIC)
                 .build();
         Room room3 = Room.builder()
+                .description("")
                 .hotel(hotel)
                 .price(100)
+                .number(4)
                 .category(RoomCategory.BASIC)
                 .build();
         hotel.getRooms().addAll(List.of(room, room1, room2, room3));
@@ -358,16 +378,20 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room4 = Room.builder()
+                .description("")
                 .hotel(hotel4)
                 .category(RoomCategory.BASIC)
                 .price(10)
+                .number(4)
                 .build();
         Hotel hotel5 = Hotel.builder()
                 .star(Star.FIVE)
                 .rooms(new ArrayList<>())
                 .build();
         Room room5 = Room.builder()
+                .description("")
                 .hotel(hotel5)
+                .number(4)
                 .category(RoomCategory.BASIC)
                 .price(10)
                 .build();
@@ -395,9 +419,11 @@ public class DataBaseTest {
                         .build())
                 .build();
         Room room = Room.builder()
+                .description("")
                 .hotel(hotel)
                 .category(RoomCategory.BASIC)
                 .price(10)
+                .number(4)
                 .build();
         Hotel hotel2 = Hotel.builder()
                 .star(Star.FOUR)
@@ -408,6 +434,8 @@ public class DataBaseTest {
                         .build())
                 .build();
         Room room2 = Room.builder()
+                .description("")
+                .number(4)
                 .hotel(hotel2)
                 .category(RoomCategory.BASIC)
                 .price(10)
@@ -445,9 +473,11 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room = Room.builder()
+                .description("")
                 .hotel(hotel)
                 .category(RoomCategory.BASIC)
                 .price(10)
+                .number(4)
                 .build();
         hotel.getRooms().add(room);
         hotelRepository.save(hotel);
@@ -472,10 +502,12 @@ public class DataBaseTest {
                 .rooms(new ArrayList<>())
                 .build();
         Room room = Room.builder()
+                .description("")
                 .hotel(hotel)
                 .category(RoomCategory.BASIC)
                 .price(10)
                 .books(new ArrayList<>())
+                .number(4)
                 .build();
         hotel.getRooms().add(room);
         hotel = hotelRepository.save(hotel);

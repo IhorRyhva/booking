@@ -78,3 +78,7 @@ but orphanRemoval in additional will remove daughter entity if she can't parent 
 
 In the test roomWithLastStartedBookBeforeTodayCanBeRemoved I must use  em.createNativeQuery for changing BookData.start to previous days, because BookDate forbids make a book
 with days before now, but for my test I must have book which start some days before today to test my AdminSpecification allow remove room with lasted start book before today
+
+05.08.2026 Why I didn't add seed data into migration? There are several reasons: firstly data must be possible to change, but if I added it
+into FlyWay migration then it would be impossible to change. The next one is that test container must do every migration and it means that every testcontainers will do more than 8 thousands
+And seed data is only dev data

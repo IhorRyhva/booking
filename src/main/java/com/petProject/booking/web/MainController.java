@@ -1,11 +1,16 @@
 package com.petProject.booking.web;
 
-import com.petProject.booking.room.RoomService;
+import com.petProject.booking.room.Room;
+import com.petProject.booking.room.RoomRepository;
 import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
-import com.petProject.booking.tool.ExtractDataFromBooking;
 import com.petProject.booking.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Score;
+import org.springframework.data.domain.ScoringFunction;
+import org.springframework.data.domain.Vector;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
@@ -16,16 +21,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
     private final UserService userService;
-    private final ExtractDataFromBooking extractDataFromBooking;
+    private final RoomRepository roomRepository;
+    private final EmbeddingModel embeddingModel;
 
     @GetMapping("/main")
     public String home(Model model, @AuthenticationPrincipal OidcUser user) {
-//        extractDataFromBooking.extractData();
         model.addAttribute("exception", false);
         extractUserInfo(model, user);
         return "bookMain";
@@ -33,11 +39,11 @@ public class MainController {
 
     private void extractUserInfo(Model model, OidcUser user) {
         if (user != null) {
+            this.userService.addUser(user);
             model.addAttribute("authorizeUser", true);
         } else {
             model.addAttribute("authorizeUser", false);
         }
-        this.userService.addUser(user);
     }
 
     @PostMapping("/main")

@@ -8,7 +8,12 @@ import com.petProject.booking.room.dto.BookedData;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.Array;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.sql.SQLType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +34,11 @@ public class Room  {
     private int price;
 
     private int bedNumber;
+
+    @Column(name = "embedding")
+    @JdbcTypeCode(value = SqlTypes.VECTOR)
+    @Array(length = 384)
+    private float[] embedding;
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 10, nullable = false)
