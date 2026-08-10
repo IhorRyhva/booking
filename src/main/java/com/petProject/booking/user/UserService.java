@@ -19,6 +19,7 @@ public class UserService {
                 User.builder()
                         .userName(user.getFullName())
                         .email(user.getEmail())
+                        .books(new ArrayList<>())
                         .build()
         ));
     }

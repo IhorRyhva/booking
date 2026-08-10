@@ -15,6 +15,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.sql.SQLType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,11 +76,11 @@ public class Room  {
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         Room room = (Room) object;
-        return Objects.equals(id, room.id);
+        return price == room.price && bedNumber == room.bedNumber && removed == room.removed && Objects.deepEquals(embedding, room.embedding) && category == room.category && Objects.equals(number, room.number) && Objects.equals(description, room.description) && Objects.equals(hotel, room.hotel) && Objects.equals(books, room.books);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(price, bedNumber, Arrays.hashCode(embedding), category, number, description, removed, hotel, books);
     }
 }

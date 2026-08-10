@@ -16,3 +16,12 @@ All secrets were migrated to .env
 
 30.07.2026 I added two new migration, set up soft delete logic for Room and Hotel, create admin specification and cover it with tests
 05.08.2026 I added two new migration, hotels and rooms are now soft deleted, also I added batch for quicker data inserts.
+
+08.08.2026 I added embedding for every room and fix some bug with booking, the most hard to find was
+mistake where I wrote ":removed", not "remove", so my WHERE filter worked fully incorrect
+
+10.08.2026 I added tests for my method "searchNotRemovedAndByEmbeddingWithLimit", and made sure that it works correctly.
+My method give me good result on testing data 10/10 for literal "quiet".
+I removed this distance upper border, because it is impossible to set normal border:
+for quiet room: strange room is distance 0.438, for chromodynamics room is distance 0.605, but both fully aren't match for "quiet room"
+

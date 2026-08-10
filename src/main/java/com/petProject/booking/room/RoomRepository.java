@@ -13,9 +13,8 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
             SELECT *
             FROM room
             WHERE removed = false
-            AND (embedding <=> CAST(:embedding AS vector)) <= :distance
             ORDER BY embedding <=> CAST(:embedding AS vector)
             LIMIT :limit
 """)
-    List<Room> searchNotRemovedAndByEmbeddingWithLimit(float[] embedding, float distance, int limit);
+    List<Room> searchNotRemovedAndByEmbeddingWithLimit(float[] embedding, int limit);
 }

@@ -82,3 +82,14 @@ with days before now, but for my test I must have book which start some days bef
 05.08.2026 Why I didn't add seed data into migration? There are several reasons: firstly data must be possible to change, but if I added it
 into FlyWay migration then it would be impossible to change. The next one is that test container must do every migration and it means that every testcontainers will do more than 8 thousands
 And seed data is only dev data
+
+10.08.2026 Why did I decide to use cosine not euclidean? For this decision I have one reason,  
+my vectors aren't normalized so euclidean method will mix semantic search with comparing texts length. 
+
+Why did I use pageable for creating room's embedding, not do it all by one time?
+I made this decision because pagination allow me to do flush and clear enough time, to avoid overload of persistence context.
+Everything is doing in a one Transaction because I want, that all my rooms have an embedding, not only some part
+
+In my "searchNotRemovedAndByEmbeddingWithLimit" method, I use native SQL, neither JPQL nor Specification, because only
+native SQL allow me use extend operators like "<=>"
+
