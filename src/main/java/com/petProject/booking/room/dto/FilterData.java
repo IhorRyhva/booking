@@ -16,8 +16,8 @@ public record FilterData(
         String city,
         LocalDate start,
         LocalDate end,
-        int min,
-        int max,
+        Integer min,
+        Integer max,
         RoomCategory roomCategory,
         Star star
 ) {

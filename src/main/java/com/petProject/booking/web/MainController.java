@@ -34,33 +34,9 @@ public class MainController {
     public String home(Model model, @AuthenticationPrincipal OidcUser user) {
         model.addAttribute("exception", false);
         extractUserInfo(model, user);
-        List<Room> rooms = roomRepository.searchNotRemovedAndByEmbeddingWithLimit(embeddingModel.embed("Quiet room"), 10);
-        for (Room room: rooms) {
-            float distance = getDistance(embeddingModel.embed("Quiet room"), room.getEmbedding());
-            System.out.println(distance);
-            String result = room.getDescription();
-            System.out.println(result);
-        }
         return "bookMain";
     }
 
-    private float getDistance(float[] roomNearToSeas, float[] embedding) {
-        float dotProduct = 0;
-        for (int i = 0; i < embedding.length; i++) {
-            dotProduct += embedding[i] * roomNearToSeas[i];
-        }
-        
-        float length = getLength(roomNearToSeas) * getLength(embedding);
-        return 1 - (dotProduct / length);
-    }
-
-    private float getLength(float[] embedding) {
-        float length = 0;
-        for (int i = 0; i < embedding.length; i++) {
-            length += embedding[i] * embedding[i];
-        }
-        return (float) Math.sqrt(length);
-    }
 
     private void extractUserInfo(Model model, OidcUser user) {
         if (user != null) {

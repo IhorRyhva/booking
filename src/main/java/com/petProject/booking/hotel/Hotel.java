@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ import java.util.List;
 @JsonAutoDetect
 public class Hotel {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hotel_seq")
     @SequenceGenerator(name = "hotel_seq", sequenceName = "hotel_seq_name", allocationSize = 50)
     private Long id;
 
@@ -34,7 +35,7 @@ public class Hotel {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "hotel")
     @JsonManagedReference
-    private List<Room> rooms;
+    private List<Room> rooms = new ArrayList<>();
 
     private boolean removed;
 

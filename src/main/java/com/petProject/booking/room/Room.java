@@ -28,7 +28,7 @@ import java.util.Objects;
 @JsonAutoDetect
 public class Room  {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "room_seq")
     @SequenceGenerator(name = "room_seq", sequenceName = "room_seq_name", allocationSize = 50)
     private Long id;
 
@@ -76,11 +76,11 @@ public class Room  {
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         Room room = (Room) object;
-        return price == room.price && bedNumber == room.bedNumber && removed == room.removed && Objects.deepEquals(embedding, room.embedding) && category == room.category && Objects.equals(number, room.number) && Objects.equals(description, room.description) && Objects.equals(hotel, room.hotel) && Objects.equals(books, room.books);
+        return price == room.price && bedNumber == room.bedNumber && removed == room.removed && category == room.category && Objects.equals(number, room.number) && Objects.equals(description, room.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(price, bedNumber, Arrays.hashCode(embedding), category, number, description, removed, hotel, books);
+        return Objects.hash(price, bedNumber, category, number, description, removed);
     }
 }

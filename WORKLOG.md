@@ -20,8 +20,8 @@ All secrets were migrated to .env
 08.08.2026 I added embedding for every room and fix some bug with booking, the most hard to find was
 mistake where I wrote ":removed", not "remove", so my WHERE filter worked fully incorrect
 
-10.08.2026 I added tests for my method "searchNotRemovedAndByEmbeddingWithLimit", and made sure that it works correctly.
-My method give me good result on testing data 10/10 for literal "quiet".
-I removed this distance upper border, because it is impossible to set normal border:
-for quiet room: strange room is distance 0.438, for chromodynamics room is distance 0.605, but both fully aren't match for "quiet room"
+10.08.2026 I added a test for my method "searchNotRemovedAndByEmbeddingWithLimit", and made sure that it works correctly.
+My method give me good result on testing data 10/10 were relevant and all descriptions haven't word "quiet"
+I removed this distance threshold, because it is impossible to set normal border:
+for quiet room: strong room -> 0.438, for chromodynamics room -> 0.605, but neither is relevant to for "quiet room"
 

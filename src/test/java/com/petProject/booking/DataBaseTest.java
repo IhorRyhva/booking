@@ -150,12 +150,14 @@ public class DataBaseTest {
                 .description("")
                 .removed(true)
                 .category(RoomCategory.BASIC)
+                .price(50)
                 .hotel(hotel)
                 .build();
         Room normal = Room.builder()
                 .number(4)
                 .description("")
                 .category(RoomCategory.BASIC)
+                .price(50)
                 .hotel(hotel)
                 .build();
         hotel.getRooms().addAll(List.of(deleted, normal));
@@ -163,7 +165,8 @@ public class DataBaseTest {
         em.flush();
         em.clear();
         List<Room> rooms = roomService.getRooms(FilterData.builder().build());
-        assertTrue(rooms.contains(normal) && rooms.size() == 1);
+        assertEquals(rooms.getFirst(), normal);
+        assertEquals(1, rooms.size());
     }
 
     @Test

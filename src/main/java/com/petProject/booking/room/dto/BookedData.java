@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -13,22 +16,22 @@ import java.util.Objects;
 @Embeddable
 @Getter
 @JsonAutoDetect
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookedData {
-    @NotNull
     private LocalDate startDate;
 
-    @NotNull
     private LocalDate endDate;
 
     public BookedData(LocalDate startDate, LocalDate endDate) throws IncorrectBookTimeException {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Start date or end date is null");
+        }
+
         if ((startDate.isBefore(LocalDate.now()) || startDate.isAfter(endDate)) || startDate.equals(endDate)) {
             throw new IncorrectBookTimeException("Check date what you wrote");
         }
         this.startDate = startDate;
         this.endDate = endDate;
-    }
-
-    public BookedData() {
     }
 
     @Override

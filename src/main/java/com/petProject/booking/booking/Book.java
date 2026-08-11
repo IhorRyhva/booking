@@ -12,7 +12,7 @@ import lombok.*;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_seq")
     @SequenceGenerator(name = "book_seq", sequenceName = "book_seq_name", allocationSize = 50)
     private Long id;
 

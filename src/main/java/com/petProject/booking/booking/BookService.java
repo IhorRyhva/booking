@@ -24,6 +24,7 @@ import java.util.Optional;
 public class BookService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final BookRepository bookRepository;
     private final RoomMapper roomMapper;
 
 
@@ -46,7 +47,7 @@ public class BookService {
     }
 
     @Transactional
-    public void registerBook(String email, @Valid BookedData bookedData, long roomId) {
+    public void registerBook(String email, BookedData bookedData, long roomId) {
         Optional<Room> roomOptional = this.roomRepository.findById(roomId);
         Optional<User> userOptional = this.userRepository.findByEmail(email);
         if (roomOptional.isEmpty()) {
@@ -61,16 +62,9 @@ public class BookService {
             throw new ForbiddenBookException();
         }
         Book book = new Book(user, bookedData, room);
-        this.bookRoom(room, book);
-        user.getBooks().add(book);
-        this.userRepository.save(user);
+        this.bookRepository.save(book);
     }
 
-
-    private void bookRoom(Room room,  Book book) {
-        room.getBooks().add(book);
-        this.roomRepository.save(room);
-    }
 
     public Room getRoom(long id) {
         Optional<Room> roomOptional = this.roomRepository.findById(id);
