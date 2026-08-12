@@ -44,7 +44,8 @@ public class AdminTest {
 
     @Test
     public void nonAdminCannotDelete() throws Exception {
-        mockMvc.perform(post("/admin/hotel/2/delete")
+        mockMvc.perform(post("/admin/hotel/delete")
+                        .param("id", "4")
                         .with(csrf())
                         .with(oidcLogin().authorities(new SimpleGrantedAuthority("user")))
                 ).andExpect(status().isForbidden());
@@ -52,7 +53,10 @@ public class AdminTest {
 
     @Test
     public void forbiddenWithoutCSRF() throws Exception {
-        mockMvc.perform(post("/admin/hotel/2/delete")).andExpect(status().isForbidden());
+        mockMvc.perform(post("/admin/hotel/delete")
+                        .param("id", "4")
+                )
+                .andExpect(status().isForbidden());
     }
 
     @Test

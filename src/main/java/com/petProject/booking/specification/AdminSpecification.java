@@ -24,7 +24,7 @@ public class AdminSpecification {
     }
 
     public static Specification<Room> getRooms(Long hotelId) {
-        return (root, query, criteriaBuilder) -> {
+        return (root, _, criteriaBuilder) -> {
             if (hotelId == null) {
                 return criteriaBuilder.conjunction();
             }
@@ -33,7 +33,7 @@ public class AdminSpecification {
     }
 
     public static Specification<Room> getRoom(Long roomId) {
-        return (root, query, criteriaBuilder) -> {
+        return (root, _, criteriaBuilder) -> {
           if (roomId == null) {
               return criteriaBuilder.conjunction();
           }

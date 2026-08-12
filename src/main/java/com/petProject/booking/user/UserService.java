@@ -32,7 +32,6 @@ public class UserService {
         Optional<User> userOptional = this.getUser(email);
         userOptional.ifPresent(user -> {
             user.setBanned(true);
-            System.out.println(user.isBanned());
             this.repository.save(user);
         });
     }

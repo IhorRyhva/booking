@@ -62,7 +62,6 @@ public class ExtractDataFromBooking {
             }
             entityManager.flush();
             entityManager.clear();
-            System.out.println(pageNumber);
             pageNumber++;
 
         } while (roomPage.hasNext());

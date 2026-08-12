@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Booking Site</title>
+
+  <!-- CSRF: потрібно для fetch-POST на /ai/ideas -->
+  <meta name="_csrf" th:if="${_csrf}" th:content="${_csrf.token}">
+  <meta name="_csrf_header" th:if="${_csrf}" th:content="${_csrf.headerName}">
 
   <style>
 
@@ -27,7 +31,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .logo {
@@ -36,17 +40,33 @@
       color: #2563eb;
     }
 
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
     .nav-links a {
-      margin-left: 20px;
       text-decoration: none;
       color: #333;
       font-weight: 500;
     }
 
+    .nav-links button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
     /* ===== HERO SECTION ===== */
     .hero {
-      height: 60vh;
-      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+      min-height: 60vh;
+      padding: 40px 20px;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
       url("https://images.unsplash.com/photo-1501117716987-c8e1ecb21059") center/cover;
       display: flex;
       align-items: center;
@@ -56,7 +76,7 @@
     }
 
     .hero h1 {
-      font-size: 48px;
+      font-size: clamp(28px, 5vw, 48px);
     }
 
     .search-box {
@@ -64,7 +84,9 @@
       margin-top: 20px;
       padding: 15px;
       border-radius: 10px;
-      display: inline-flex;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 10px;
     }
 
@@ -93,7 +115,7 @@
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
     }
 
@@ -101,13 +123,14 @@
       background: white;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .card img {
       width: 100%;
       height: 160px;
       object-fit: cover;
+      display: block;
     }
 
     .card-content {
@@ -127,6 +150,197 @@
       margin-top: 40px;
     }
 
+    /* ===== IDEAS (semantic search) ===== */
+    .ideas-container {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .ideas-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: none;
+      border-radius: 30px;
+      background: #2563eb;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 22px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+      transition: transform 0.2s;
+    }
+
+    .ideas-toggle:hover {
+      transform: translateY(-2px);
+    }
+
+    .ideas-panel {
+      display: none;
+      flex-direction: column;
+      width: 380px;
+      max-width: calc(100vw - 50px);
+      max-height: min(520px, calc(100vh - 130px));
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .ideas-panel.open {
+      display: flex;
+    }
+
+    .ideas-header {
+      background: #2563eb;
+      color: white;
+      padding: 16px;
+    }
+
+    .ideas-header strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .ideas-header span {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .ideas-form {
+      display: flex;
+      gap: 8px;
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .ideas-form input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .ideas-form input:focus {
+      border-color: #2563eb;
+    }
+
+    .ideas-form button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      border-radius: 6px;
+      padding: 0 16px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .ideas-form button:disabled {
+      background: #94a3b8;
+      cursor: default;
+    }
+
+    .ideas-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 14px 14px;
+    }
+
+    .ideas-chips button {
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .ideas-results {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      background: #f8fafc;
+    }
+
+    .ideas-note {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .idea-card {
+      display: flex;
+      gap: 12px;
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .idea-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+    }
+
+    .idea-card img {
+      width: 76px;
+      height: 76px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #e2e8f0;
+    }
+
+    .idea-title {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .idea-meta {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .idea-price {
+      font-size: 13px;
+      color: #2563eb;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .ideas-spinner {
+      width: 22px;
+      height: 22px;
+      margin: 20px auto;
+      border: 3px solid #dbeafe;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ideas-spinner { animation-duration: 2s; }
+      .ideas-toggle { transition: none; }
+    }
   </style>
 </head>
 
@@ -135,38 +349,32 @@
 <!-- NAVBAR -->
 <div class="navbar">
   <div class="logo">BookEasy</div>
-  <div class="nav-links" th:if="${!authorizeUser}">
-    <a href="/login">Login</a>
-  </div>
-  <form class="nav-links" th:if="${authorizeUser}" th:action="@{/logout}" method="post">
-    <button>Logout</button>
-    <a th:href="@{/admin}" sec:authorize="hasAuthority('admin')">Admin panel</a>
-  </form>
 
-  <form class="nav-links" th:if="${authorizeUser}">
-    <a href="/bookedRoom">My books</a>
-  </form>
+  <div class="nav-links" th:unless="${authorizeUser}">
+    <a th:href="@{/login}">Login</a>
+  </div>
+
+  <div class="nav-links" th:if="${authorizeUser}">
+    <a th:href="@{/bookedRoom}">My books</a>
+    <a th:href="@{/admin}" sec:authorize="hasAuthority('admin')">Admin panel</a>
+
+    <form th:action="@{/logout}" method="post">
+      <button type="submit">Logout</button>
+    </form>
+  </div>
 </div>
 
 <!-- HERO -->
 <div class="hero">
   <div>
-    <h1 th:if="${!exception}">Find your perfect stay</h1>
+    <h1 th:unless="${exception}">Find your perfect stay</h1>
     <h1 th:if="${exception}">Please write a correct data</h1>
 
-    <form th:action="@{/main}"  method="post" class="search-box" th:if="${!exception}">
-      <input type="text" placeholder="Write country" name="country" required>
-      <input type="text" placeholder="Write city" name="city">
-      <input type="date" name="start" required>
-      <input type="date" name="end" required>
-      <button type="submit">Search</button>
-    </form>
-
-    <form th:action="@{/main}"  method="post" class="search-box" th:if="${exception}">
-      <input type="text" th:value="${country}" name="country" required>
-      <input type="text" th:value="${city}" name="city">
-      <input type="date" name="start" required>
-      <input type="date" name="end" required>
+    <form th:action="@{/main}" method="post" class="search-box">
+      <input type="text" name="country" placeholder="Write country" th:value="${country}" required>
+      <input type="text" name="city" placeholder="Write city" th:value="${city}">
+      <input type="date" name="start" th:value="${start}" required>
+      <input type="date" name="end" th:value="${end}" required>
       <button type="submit">Search</button>
     </form>
   </div>
@@ -179,21 +387,23 @@
   <div class="cards">
 
     <div class="card">
-      <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34">
+      <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" alt="Paris">
       <div class="card-content">
         <div class="card-title">Paris</div>
       </div>
     </div>
 
     <div class="card">
-      <img src="https://images.unsplash.com/photo-1529260830199-42c24126f198?q=80&w=1476&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+      <img src="https://images.unsplash.com/photo-1529260830199-42c24126f198?q=80&amp;w=1476&amp;auto=format&amp;fit=crop"
+           alt="Rome">
       <div class="card-content">
         <div class="card-title">Rome</div>
       </div>
     </div>
 
     <div class="card">
-      <img src="https://images.unsplash.com/photo-1513407030348-c983a97b98d8?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+      <img src="https://images.unsplash.com/photo-1513407030348-c983a97b98d8?q=80&amp;w=1472&amp;auto=format&amp;fit=crop"
+           alt="Tokyo">
       <div class="card-content">
         <div class="card-title">Tokyo</div>
       </div>
@@ -205,6 +415,70 @@
 <div class="footer">
   © 2026 BookEasy
 </div>
+
+<!-- IDEAS: семантичний пошук -->
+<div class="ideas-container">
+
+  <div class="ideas-panel" id="ideasPanel">
+
+    <div class="ideas-header">
+      <strong>Не знаєте, куди поїхати?</strong>
+      <span>Опишіть настрій — підберемо місця</span>
+    </div>
+
+    <form class="ideas-form" id="ideasForm" th:action="@{/ai}" method="post">
+      <input type="text" id="ideasInput" name="query" placeholder="Тихе місце біля моря..."
+             autocomplete="off" maxlength="200" required>
+      <button type="submit" id="ideasSubmit">Знайти</button>
+    </form>
+
+    <div class="ideas-chips">
+      <button type="button" class="chip">Біля моря</button>
+      <button type="button" class="chip">Гори і тиша</button>
+      <button type="button" class="chip">Місто з нічним життям</button>
+    </div>
+
+  </div>
+
+  <button type="button" class="ideas-toggle" id="ideasToggle"
+          aria-expanded="false" aria-controls="ideasPanel">
+    <span aria-hidden="true">✨</span> Підкажи ідею
+  </button>
+</div>
+
+<script>
+  // Панель — лише візуальний акордеон. Сама форма відправляється звичайним
+  // POST на /ai (як будь-яка форма на сторінці), сервер сам робить
+  // редірект на /ai/result зі списком кімнат. Ніякого fetch тут не потрібно.
+  (function () {
+    const panel  = document.getElementById('ideasPanel');
+    const toggle = document.getElementById('ideasToggle');
+    const form   = document.getElementById('ideasForm');
+    const input  = document.getElementById('ideasInput');
+
+    function togglePanel() {
+      const open = panel.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+      if (open) input.focus();
+    }
+
+    toggle.addEventListener('click', togglePanel);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && panel.classList.contains('open')) {
+        togglePanel();
+        toggle.focus();
+      }
+    });
+
+    document.querySelectorAll('.ideas-chips .chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        input.value = chip.textContent.trim();
+        form.requestSubmit();
+      });
+    });
+  })();
+</script>
 
 </body>
 </html>

@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,8 +17,7 @@ import java.util.Optional;
 public class AdminService {
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
-/**TODO**/
-// ще додай emailService
+
     @Transactional
     public boolean removeHotel(long id) {
         Optional<Hotel> hotelOptional = hotelRepository.findById(id);

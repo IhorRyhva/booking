@@ -73,7 +73,7 @@ public class AiTest {
         hotelRepository.save(hotel);
         em.flush();
         em.clear();
-        List<Room> rooms = roomRepository.searchNotRemovedAndByEmbeddingWithLimit(embeddingModel.embed("Quiet room"), 1);
+        List<Room> rooms = roomRepository.searchNotRemovedAndByEmbeddingWithLimit(embeddingModel.embed("Quiet room"));
         assertEquals(1, rooms.size());
         assertEquals( quiet.getDescription(), rooms.getFirst().getDescription());
     }

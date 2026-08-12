@@ -35,7 +35,7 @@ public class BookController {
     @GetMapping("/bookedRoom")
     public String getUsersBookedRooms (Model model, @AuthenticationPrincipal OidcUser oidcUser) {
         model.addAttribute("email", oidcUser.getEmail());
-        List<BookResponse> books = bookService.getBooksByUser(oidcUser.getEmail());
+        List<Book> books = bookService.getBooksByUser(oidcUser.getEmail());
         model.addAttribute("books", books);
         return "myBooks";
     }

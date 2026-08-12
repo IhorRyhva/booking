@@ -21,7 +21,8 @@ public class RoomService {
                 RoomSpecification.filterByStar(filterData.star()),
                 RoomSpecification.getNotRemovedRoom(),
                 RoomSpecification.filterByPrice(filterData.min(), filterData.max()),
-                RoomSpecification.filterByDate(filterData.start(), filterData.end())
+                RoomSpecification.filterByDate(filterData.start(), filterData.end()),
+                RoomSpecification.getRoomByBedNumber(filterData.bedNumber())
         ));
     }
 }

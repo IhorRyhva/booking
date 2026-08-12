@@ -87,4 +87,13 @@ public class RoomSpecification {
           return criteriaBuilder.equal(root.get("removed"), false);
         };
     }
+
+    public static Specification<Room> getRoomByBedNumber(Integer bedNumber) {
+        return (root, query, criteriaBuilder) -> {
+          if (bedNumber == null) {
+              return criteriaBuilder.conjunction();
+          }
+          return criteriaBuilder.equal(root.get("bedNumber"), bedNumber);
+        };
+    }
 }

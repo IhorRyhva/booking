@@ -210,6 +210,9 @@
                 <label th:if="${error}">Min price, please enter correct price</label>
                 <input type="number" name="min" th:value="${minPrice}">
             </div>
+            <div class="filter-group">
+                <input type="number" name="bedNumber" th:value="${bedNumber}">
+            </div>
             <input type="hidden" name="start"  th:value="${start}">
             <input type="hidden" name="end"  th:value="${end}">
             <input type="hidden" name="city"  th:value="${city}">

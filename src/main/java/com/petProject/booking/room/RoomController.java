@@ -59,6 +59,7 @@ public class RoomController {
         model.addAttribute("city", filterData.city());
         model.addAttribute("start", filterData.start());
         model.addAttribute("end", filterData.end());
+        model.addAttribute("bedNumber", filterData.bedNumber());
         return "result";
     }
 

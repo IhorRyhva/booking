@@ -27,8 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MainController {
     private final UserService userService;
-    private final RoomRepository roomRepository;
-    private final EmbeddingModel embeddingModel;
 
     @GetMapping("/main")
     public String home(Model model, @AuthenticationPrincipal OidcUser user) {

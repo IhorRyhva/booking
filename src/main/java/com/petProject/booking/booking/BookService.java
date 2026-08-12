@@ -1,7 +1,5 @@
 package com.petProject.booking.booking;
 
-import com.petProject.booking.hotel.Hotel;
-import com.petProject.booking.hotel.HotelRepository;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomMapper;
 import com.petProject.booking.room.RoomRepository;
@@ -9,13 +7,11 @@ import com.petProject.booking.room.dto.BookedData;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,21 +21,16 @@ public class BookService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final BookRepository bookRepository;
-    private final RoomMapper roomMapper;
-
 
     /*TODO: add email to booking response*/
 
-    public List<BookResponse> getBooksByUser (String email) {
-        return this.userRepository
-                .findByEmail(email)
-                .map(u -> u.getBooks().stream()
-                        .map(book -> BookResponse.builder()
-                                .bookedData(book.getBookedData())
-                                .room(roomMapper.toResponse(book.getRoom()))
-                                .build())
-                        .toList()
-                ).orElseGet(ArrayList::new);
+    public List<Book> getBooksByUser (String email) {
+        Optional<User> optionalUser = this.userRepository.findByEmail(email);
+        if(optionalUser.isEmpty()) {
+            throw new NotExistUserException();
+        }
+
+        return this.bookRepository.getBooksByUser(optionalUser.get().getId());
     }
 
     public String getFormattedDate(LocalDate start) {

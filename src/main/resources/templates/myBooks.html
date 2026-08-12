@@ -83,11 +83,11 @@
         <div class="booking-card" th:each="book : ${books}">
 
             <div class="hotel-name"
-                 th:text="${book.getRoom().hotel().nameOfHotel()}">
+                 th:text="${book.getRoom().getHotel().getNameOfHotel()}">
             </div>
 
             <div class="location"
-                 th:text="${book.getRoom().hotel().location()}">
+                 th:text="${book.getRoom().getHotel().getLocation()}">
             </div>
 
             <div class="info">
@@ -98,22 +98,22 @@
             <div class="info">
                 <span class="label">Stars:</span>
                 <span class="stars"
-                      th:text="${book.getRoom().hotel().star()}"></span>
+                      th:text="${book.getRoom().getHotel().getStar()}"></span>
             </div>
 
             <div class="info">
                 <span class="label">Room number:</span>
-                <span th:text="${book.getRoom().number()}"></span>
+                <span th:text="${book.getRoom().getNumber()}"></span>
             </div>
 
             <div class="info">
                 <span class="label">Category:</span>
-                <span th:text="${book.getRoom().roomCategory()}"></span>
+                <span th:text="${book.getRoom().getCategory()}"></span>
             </div>
 
             <div class="info">
                 <span class="label">Price:</span>
-                <span th:text="${book.getRoom().price()} + ' $'"></span>
+                <span th:text="${book.getRoom().getPrice()} + ' $'"></span>
             </div>
 
         </div>
