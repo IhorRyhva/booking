@@ -4,8 +4,10 @@ import com.petProject.booking.booking.Book;
 import com.petProject.booking.hotel.Star;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomCategory;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
+import org.springframework.data.domain.Vector;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;

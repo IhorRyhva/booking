@@ -3,14 +3,13 @@ package com.petProject.booking.room;
 import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
 import com.petProject.booking.room.dto.FilterData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,34 +19,41 @@ import java.util.List;
 public class RoomController {
     private final RoomService roomService;
 
-    @GetMapping("/result")
+    @GetMapping("/result/{page}")
     public String result (Model model, @RequestParam String city, @RequestParam String country, @RequestParam LocalDate start,
-                          @RequestParam LocalDate end, @AuthenticationPrincipal OidcUser oidcUser) {
+                          @RequestParam LocalDate end, @AuthenticationPrincipal OidcUser oidcUser,
+                          @PathVariable int page) {
         model.addAttribute("error", false);
         model.addAttribute("maxPrice", 1000);
         model.addAttribute("minPrice", 0);
         model.addAttribute("authorizeUser", oidcUser != null);
-        model.addAttribute("rooms", this.roomService.getRooms(FilterData.builder()
-                        .max(1000)
-                        .min(0)
-                        .start(start)
-                        .end(end)
-                        .city(city)
-                        .country(country)
-                .build()));
+        Page<Room> rooms = this.roomService.getRooms(FilterData.builder()
+                .max(1000)
+                .min(0)
+                .start(start)
+                .end(end)
+                .city(city)
+                .country(country)
+                .build(), page);
+        model.addAttribute("rooms", rooms);
         model.addAttribute("country", country);
         model.addAttribute("city", city);
         model.addAttribute("start", start);
         model.addAttribute("end", end);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", rooms.getSize() - 1);
         return "result";
     }
 
     @PostMapping("/result")
-    public String postResult (Model model, @ModelAttribute FilterData filterData, @AuthenticationPrincipal OidcUser oidcUser) throws IncorrectMaxMinPriceException {
+    public String postResult (Model model, @ModelAttribute FilterData filterData,
+                              @AuthenticationPrincipal OidcUser oidcUser) throws IncorrectMaxMinPriceException {
         if (filterData.min() > filterData.max()) {
             throw new IncorrectMaxMinPriceException("You enter incorrect values");
         }
-        List<Room> rooms = this.roomService.getRooms(filterData);
+        Page<Room> rooms = this.roomService.getRooms(filterData, 0);
+        model.addAttribute("currentPage", 0);
+        model.addAttribute("totalPages", rooms.getSize() - 1);
         model.addAttribute("authorizeUser", oidcUser != null);
         model.addAttribute("star", filterData.star());
         model.addAttribute("roomCategory", filterData.roomCategory());

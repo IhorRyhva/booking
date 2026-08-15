@@ -115,10 +115,10 @@
 
     <form th:action="@{/bookRoom}" method="post" >
       <label>Check in</label>
-      <input type="text" th:value="${startString}" readonly>
+      <input type="date" name="start" th:value="${start != null}" required>
 
       <label>Check out</label>
-      <input type="text" th:value="${endString}" readonly>
+      <input type="date" name="end" th:value="${end != null}" required>
 
       <!--AUTH USER-->
       <div th:if="${authorized}">
@@ -144,6 +144,7 @@
 
     </form>
   </div>
+
 
   <div class="footer">
     Your booking will be processed after confirmation.

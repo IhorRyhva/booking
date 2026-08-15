@@ -27,7 +27,7 @@ public class BookController {
 
     @GetMapping("/bookRoom")
     public String formForBook (@AuthenticationPrincipal OidcUser user, @RequestParam long roomId,
-                               Model model, @RequestParam LocalDate start, @RequestParam LocalDate end) {
+                               Model model, @RequestParam(required = false) LocalDate start, @RequestParam(required = false) LocalDate end) {
         this.addAttributeForPage(user, roomId, model, start, end);
         return "bookRoom";
     }
@@ -56,12 +56,10 @@ public class BookController {
     }
 
     private void addAttributeForPage(OidcUser user, long id, Model model, LocalDate startDate, LocalDate endDate) {
-        String start = this.bookService.getFormattedDate(startDate);
-        String end = this.bookService.getFormattedDate(endDate);
-        model.addAttribute("startString", start);
-        model.addAttribute("endString", end);
-        model.addAttribute("start", startDate);
-        model.addAttribute("end", endDate);
+        if (startDate != null && endDate != null) {
+            model.addAttribute("start", startDate);
+            model.addAttribute("end", endDate);
+        }
         model.addAttribute("roomId", id);
         Room room = this.bookService.getRoom(id);
         Hotel hotel = room.getHotel();

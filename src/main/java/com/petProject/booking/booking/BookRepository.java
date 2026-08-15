@@ -12,6 +12,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query(nativeQuery = true, value = """
         SELECT *
         FROM book WHERE book.user_id = :userId
+        ORDER BY book.start_date DESC
 """)
     List<Book> getBooksByUser(long userId);
 }

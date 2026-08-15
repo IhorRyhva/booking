@@ -15,6 +15,7 @@ import com.petProject.booking.specification.RoomSpecification;
 import com.petProject.booking.user.User;
 import com.petProject.booking.user.UserRepository;
 import jakarta.persistence.EntityManager;
+import org.apache.commons.compress.utils.Lists;
 import org.hibernate.Session;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,7 +165,7 @@ public class DataBaseTest {
         hotelRepository.save(hotel);
         em.flush();
         em.clear();
-        List<Room> rooms = roomService.getRooms(FilterData.builder().build());
+        List<Room> rooms = Lists.newArrayList(roomService.getRooms(FilterData.builder().build(), 0).iterator());
         assertEquals(rooms.getFirst(), normal);
         assertEquals(1, rooms.size());
     }

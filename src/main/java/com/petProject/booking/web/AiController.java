@@ -4,15 +4,13 @@ import com.petProject.booking.common.exception.IncorrectBookTimeException;
 import com.petProject.booking.common.exception.IncorrectMaxMinPriceException;
 import com.petProject.booking.room.Room;
 import com.petProject.booking.room.RoomRepository;
+import com.petProject.booking.room.RoomService;
 import com.petProject.booking.room.dto.BookedData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AiController {
-    private final RoomRepository roomRepository;
+    private final RoomService roomService;
     private final EmbeddingModel embeddingModel;
 
     @PostMapping("/ai")
@@ -31,7 +29,7 @@ public class AiController {
 
     @GetMapping("/ai/result")
     public String getResult (@RequestParam String query, Model model) {
-        List<Room> rooms = this.roomRepository
+        List<Room> rooms = this.roomService
                 .searchNotRemovedAndByEmbeddingWithLimit(embeddingModel.embed(query));
         model.addAttribute("rooms", rooms);
         model.addAttribute("query", query);
@@ -42,11 +40,10 @@ public class AiController {
     public String newResult (@ModelAttribute SearchDTO searchDTO, Model model) throws IncorrectMaxMinPriceException, IncorrectBookTimeException {
         float[] embedding = embeddingModel.embed(searchDTO.query());
         if (searchDTO.min() > searchDTO.max()) {
-            throw new IncorrectMaxMinPriceException("You enter incorrect values");
+            throw new IncorrectMaxMinPriceException("You enter incorrect price");
         }
         BookedData bookedData = new BookedData(searchDTO.start(), searchDTO.end());
-        List<Room> rooms = this.roomRepository.searchRooms(searchDTO.country(), searchDTO.city(), searchDTO.start(), searchDTO.end(),
-                searchDTO.min(), searchDTO.max(), searchDTO.roomCategory(), searchDTO.star(), searchDTO.bedNumber(), embedding);
+        List<Room> rooms = this.roomService.findRoom(searchDTO, embedding);
         model.addAttribute("rooms", rooms);
         model.addAttribute("query", searchDTO.query());
         model.addAttribute("country", searchDTO.country());

@@ -57,7 +57,7 @@ public class MainController {
             redirectAttributes.addAttribute("end", bookedData.getEndDate());
             redirectAttributes.addAttribute("country", country);
             redirectAttributes.addAttribute("city", city);
-            return "redirect:/result";
+            return "redirect:/result/0";
         } catch (IncorrectBookTimeException e) {
             model.addAttribute("country", country);
             model.addAttribute("city", city);

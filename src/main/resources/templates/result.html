@@ -147,7 +147,27 @@
             text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.06);
         }
+        .pagination {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            justify-content: center;
+        }
 
+        .pagination a {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: white;
+            color: #1976d2;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .pagination a.active {
+            background: #1976d2;
+            color: white;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -262,9 +282,31 @@
                 </form>
             </div>
         </div>
-
     </div>
+</div>
+<div th:if="${totalPages > 1}" class="pagination">
+    <a th:if="${currentPage > 0}"
+       th:href="@{/result(page=${currentPage - 1}, star=${star}, roomCategory=${roomCategory},
+                          min=${minPrice}, max=${maxPrice}, bedNumber=${bedNumber},
+                          start=${start}, end=${end}, city=${city}, country=${country})}">
+        « Prev
+    </a>
 
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/result(page=${i}, star=${star}, roomCategory=${roomCategory},
+                              min=${minPrice}, max=${maxPrice}, bedNumber=${bedNumber},
+                              start=${start}, end=${end}, city=${city}, country=${country})}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage} ? 'active' : ''">
+        </a>
+    </span>
+
+    <a th:if="${currentPage < totalPages - 1}"
+       th:href="@{/result(page=${currentPage + 1}, star=${star}, roomCategory=${roomCategory},
+                          min=${minPrice}, max=${maxPrice}, bedNumber=${bedNumber},
+                          start=${start}, end=${end}, city=${city}, country=${country})}">
+        Next »
+    </a>
 </div>
 
 </body>

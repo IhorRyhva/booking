@@ -18,6 +18,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -73,7 +74,7 @@ public class AiTest {
         hotelRepository.save(hotel);
         em.flush();
         em.clear();
-        List<Room> rooms = roomRepository.searchNotRemovedAndByEmbeddingWithLimit(embeddingModel.embed("Quiet room"));
+        List<Room> rooms = roomRepository.searchNotRemovedAndByEmbeddingWithLimit(Arrays.toString(embeddingModel.embed("Quiet room")));
         assertEquals(1, rooms.size());
         assertEquals( quiet.getDescription(), rooms.getFirst().getDescription());
     }
